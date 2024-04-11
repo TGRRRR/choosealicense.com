@@ -1,0 +1,97 @@
+---
+layout: default
+title: License Advisor
+permalink: /advisor/
+---
+
+<div class="main-content">
+    <p>This interactive quiz will help you find the open source license best suited for your project.</p>
+
+    <div id="quizDialog" class="quiz-dialog">
+        <p>Do you prefer permissive or copyleft licenses?</p>
+        <button data-filter="permissive">Permissive</button>
+        <button data-filter="copyleft">Copyleft</button>
+        <button data-filter="any">Any</button>
+    </div>
+    
+    
+    <!-- Filter UI -->
+    <div id="licenseFilters">
+        <label><input type="checkbox" name="filter" value="permissive"> Permissive</label>
+        <label><input type="checkbox" name="filter" value="copyleft"> Copyleft</label>
+        <label><input type="checkbox" name="filter" value="patent-protection"> Patent Protection</label>
+        <!-- Add more filters as needed -->
+    </div>
+    
+    <!-- License Sections -->
+    <div class="license" data-type="permissive" data-patent-protection="false">
+        {% include license-overview.html license-id="mit" %}
+    </div>
+    <div class="license" data-type="copyleft" data-patent-protection="true">
+        {% include license-overview.html license-id="gpl-3.0" %}
+    </div>
+    <div class="license" data-type="permissive" data-patent-protection="true">
+        {% include license-overview.html license-id="apache-2.0" %}
+    </div>
+    <!-- Add more licenses as needed -->
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // Handle quiz dialog interactions
+    document.querySelectorAll('#quizDialog button').forEach(button => {
+        button.addEventListener('click', function() {
+            const filter = this.getAttribute('data-filter');
+            applyFilters(filter);
+            // Hide the dialog and potentially show the next question
+            document.getElementById('quizDialog').style.display = 'none';
+            // If implementing multiple questions, here you would set up the next question
+        });
+    });
+
+    // Adjusted to take an optional filter parameter
+    function applyFilters(selectedFilter = 'any') {
+        const filters = document.querySelectorAll('#licenseFilters input[type="checkbox"]');
+        if (selectedFilter !== 'any') {
+            filters.forEach(filter => {
+                filter.checked = filter.value === selectedFilter;
+            });
+        } else {
+            filters.forEach(filter => filter.checked = false);
+        }
+
+        // Trigger the filtering logic
+        const selectedFilters = Array.from(filters)
+            .filter(filter => filter.checked)
+            .map(filter => filter.value);
+        
+        document.querySelectorAll('.license').forEach(license => {
+            const type = license.getAttribute('data-type');
+            const patentProtection = license.getAttribute('data-patent-protection') === 'true';
+            let show = selectedFilters.length === 0 || selectedFilters.includes(type) || (selectedFilters.includes('patent-protection') && patentProtection);
+            license.style.display = show ? '' : 'none';
+        });
+    }
+});
+
+</script>
+
+<style>
+
+    .quiz-dialog {
+    border: 1px solid #ccc;
+    padding: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.quiz-dialog p {
+    margin: 20px 0;
+}
+
+.quiz-dialog button {
+    margin: 0 10px;
+    padding: 5px 15px;
+}
+
+</style>
