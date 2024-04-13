@@ -5,80 +5,128 @@ permalink: /advisor/
 ---
 
 <div class="main-content">
-    <p>This interactive quiz will help you find the open source license best suited for your project.</p>
 
+    <!-- Quiz Dialog -->
+    <p>Answer the following questions to find the open source license best suited for your project.</p>
     <div id="quizDialog" class="quiz-dialog">
-        <p>Do you prefer permissive or copyleft licenses?</p>
-        <button data-filter="permissive">Permissive</button>
-        <button data-filter="copyleft">Copyleft</button>
-        <button data-filter="any">Any</button>
+        <!-- Quiz questions will be dynamically inserted here -->
     </div>
-    
-    
-    <!-- Filter UI -->
-    <div id="licenseFilters">
-        <label><input type="checkbox" name="filter" value="permissive"> Permissive</label>
-        <label><input type="checkbox" name="filter" value="copyleft"> Copyleft</label>
-        <label><input type="checkbox" name="filter" value="patent-protection"> Patent Protection</label>
-        <!-- Add more filters as needed -->
+
+    <!-- Filters (hidden by default, will be shown after quiz is completed) -->
+    <div id="licenseFilters" class="quiz-dialog">
+        <label><input type="checkbox" name="filter" value="permissive" onchange="updateFilters()"> Permissive</label>
+        <label><input type="checkbox" name="filter" value="copyleft" onchange="updateFilters()"> Copyleft</label>
+        <label><input type="checkbox" name="filter" value="patent" onchange="updateFilters()"> Patent</label>
+        <label><input type="checkbox" name="filter" value="liability" onchange="updateFilters()"> Liability</label>
+        <label><input type="checkbox" name="filter" value="trademark" onchange="updateFilters()"> Trademark Use</label>
+        <label><input type="checkbox" name="filter" value="warranty" onchange="updateFilters()"> Warranty</label>
+        <label><input type="checkbox" name="filter" value="documentation" onchange="updateFilters()"> Changes</label>
     </div>
-    
-    <!-- License Sections -->
-    <div class="license" data-type="permissive" data-patent-protection="false">
-        {% include license-overview.html license-id="mit" %}
+
+    <!-- License List (hidden by default, will be shown after quiz is completed) -->
+    <div id="license-list">
+        <!-- Dynamic license entries will be inserted here based on filters -->
+        <div class="license" data-type="permissive" data-patent="no" data-liability="yes" data-trademark="no" data-warranty="yes" data-documentation="no">
+            {% include license-overview.html license-id="mit" %}
+        </div>
+        <div class="license" data-type="copyleft" data-patent="yes" data-liability="yes" data-trademark="no" data-warranty="yes" data-documentation="yes">
+            {% include license-overview.html license-id="gpl-3.0" %}
+        </div>
+        <div class="license" data-type="permissive" data-patent="yes" data-liability="yes" data-trademark="yes" data-warranty="yes" data-documentation="yes">
+            {% include license-overview.html license-id="apache-2.0" %}
+        </div>
+        <div class="license" data-type="permissive" data-patent="no" data-liability="yes" data-trademark="no" data-warranty="yes" data-documentation="no">
+            {% include license-overview.html license-id="bsd-2-clause" %}
+        </div>
+        <div class="license" data-type="permissive" data-patent="no" data-liability="yes" data-trademark="no" data-warranty="yes" data-documentation="no">
+            {% include license-overview.html license-id="bsd-3-clause" %}
+        </div>
+        <div class="license" data-type="permissive" data-patent="no" data-liability="yes" data-trademark="no" data-warranty="yes" data-documentation="no">
+            {% include license-overview.html license-id="unlicense" %}
+        </div>
     </div>
-    <div class="license" data-type="copyleft" data-patent-protection="true">
-        {% include license-overview.html license-id="gpl-3.0" %}
-    </div>
-    <div class="license" data-type="permissive" data-patent-protection="true">
-        {% include license-overview.html license-id="apache-2.0" %}
-    </div>
-    <!-- Add more licenses as needed -->
 </div>
 
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-    // Handle quiz dialog interactions
-    document.querySelectorAll('#quizDialog button').forEach(button => {
-        button.addEventListener('click', function() {
-            const filter = this.getAttribute('data-filter');
-            applyFilters(filter);
-            // Hide the dialog and potentially show the next question
-            document.getElementById('quizDialog').style.display = 'none';
-            // If implementing multiple questions, here you would set up the next question
-        });
-    });
-
-    // Adjusted to take an optional filter parameter
-    function applyFilters(selectedFilter = 'any') {
-        const filters = document.querySelectorAll('#licenseFilters input[type="checkbox"]');
-        if (selectedFilter !== 'any') {
-            filters.forEach(filter => {
-                filter.checked = filter.value === selectedFilter;
-            });
-        } else {
-            filters.forEach(filter => filter.checked = false);
+    const quizQuestions = [
+        { question: "Do you work in a community or team?", filter: "community" },
+        { question: "Do you use existing code as a base or some libraries?", filter: "existing-code" },
+        { question: "Do you prefer Permissive or Copyleft licenses?", filter: "permissive", secondaryFilter: "copyleft" },
+        { question: "Do you want to patent your code?", filter: "patent" },
+        { question: "Do you want to protect yourself by clearly having a limitation of liability?", filter: "liability" },
+        { question: "Do you want to protect yourself by clearly prohibiting use of Trademark?", filter: "trademark" },
+        { question: "Do you want to protect yourself by clearly not providing any warranty?", filter: "warranty" },
+        { question: "Do you mind documenting the changes you made?", filter: "documentation" }
+    ];
+    
+    let currentQuestionIndex = 0;
+    
+    function displayQuestion() {
+        const quizDialog = document.getElementById('quizDialog');
+        const questionObj = quizQuestions[currentQuestionIndex];
+        let buttonsHTML = `<button onclick="applyFilter('${questionObj.filter}')">Yes</button>`;
+        if (questionObj.secondaryFilter) {
+            buttonsHTML += `<button onclick="applyFilter('${questionObj.secondaryFilter}')">No</button>`;
         }
-
-        // Trigger the filtering logic
-        const selectedFilters = Array.from(filters)
-            .filter(filter => filter.checked)
-            .map(filter => filter.value);
-        
-        document.querySelectorAll('.license').forEach(license => {
-            const type = license.getAttribute('data-type');
-            const patentProtection = license.getAttribute('data-patent-protection') === 'true';
-            let show = selectedFilters.length === 0 || selectedFilters.includes(type) || (selectedFilters.includes('patent-protection') && patentProtection);
-            license.style.display = show ? '' : 'none';
-        });
+        quizDialog.innerHTML = `<p>${questionObj.question}</p>` + buttonsHTML + `<button onclick="nextQuestion()">Skip</button>`;
     }
-});
-
-</script>
+    
+    function applyFilter(filterValue) {
+        const filters = document.getElementById('licenseFilters').querySelectorAll('input[type="checkbox"]');
+        filters.forEach(filter => {
+            filter.checked = filter.value === filterValue;
+        });
+        updateFilters();
+        nextQuestion();
+    }
+    
+    function nextQuestion() {
+        currentQuestionIndex++;
+        displayQuestion();
+    }
+    
+    function showResults() {
+        document.getElementById('quizDialog').style.display = 'none';
+        document.getElementById('licenseFilters').style.display = 'block';
+        document.getElementById('license-list').style.display = 'block';
+    }
+    
+    function updateFilters() {
+        const filters = document.getElementById('licenseFilters').querySelectorAll('input[type="checkbox"]');
+        const licenses = document.getElementById('license-list').querySelectorAll('.license');
+        licenses.forEach(license => {
+            const isPermissive = license.getAttribute('data-type') === 'permissive';
+            const isCopyleft = license.getAttribute('data-type') === 'copyleft';
+            let isMatch = true;
+            filters.forEach(filter => {
+                if (filter.checked) {
+                    switch (filter.value) {
+                        case 'permissive':
+                            if (!isPermissive) isMatch = false;
+                            break;
+                        case 'copyleft':
+                            if (!isCopyleft) isMatch = false;
+                            break;
+                        default:
+                            if (license.getAttribute('data-' + filter.value) !== 'yes') {
+                                isMatch = false;
+                            }
+                            break;
+                    }
+                }
+            });
+            license.style.display = isMatch ? 'block' : 'none';
+        });
+        if (currentQuestionIndex >= quizQuestions.length) showResults();
+    }
+    
+    // Start the quiz
+    displayQuestion();
+    </script>
+    
 
 <style>
-
-    .quiz-dialog {
+.quiz-dialog {
     border: 1px solid #ccc;
     padding: 20px;
     margin-bottom: 20px;
@@ -94,4 +142,5 @@ document.addEventListener("DOMContentLoaded", function() {
     padding: 5px 15px;
 }
 
+/* Additional styles can go here */
 </style>
