@@ -3,144 +3,67 @@ layout: default
 title: License Advisor
 permalink: /advisor/
 ---
-
-<div class="main-content">
-
-    <!-- Quiz Dialog -->
-    <p>Answer the following questions to find the open source license best suited for your project.</p>
-    <div id="quizDialog" class="quiz-dialog">
-        <!-- Quiz questions will be dynamically inserted here -->
-    </div>
-
-    <!-- Filters (hidden by default, will be shown after quiz is completed) -->
-    <div id="licenseFilters" class="quiz-dialog">
-        <label><input type="checkbox" name="filter" value="permissive" onchange="updateFilters()"> Permissive</label>
-        <label><input type="checkbox" name="filter" value="copyleft" onchange="updateFilters()"> Copyleft</label>
-        <label><input type="checkbox" name="filter" value="patent" onchange="updateFilters()"> Patent</label>
-        <label><input type="checkbox" name="filter" value="liability" onchange="updateFilters()"> Liability</label>
-        <label><input type="checkbox" name="filter" value="trademark" onchange="updateFilters()"> Trademark Use</label>
-        <label><input type="checkbox" name="filter" value="warranty" onchange="updateFilters()"> Warranty</label>
-        <label><input type="checkbox" name="filter" value="documentation" onchange="updateFilters()"> Changes</label>
-    </div>
-
-    <!-- License List (hidden by default, will be shown after quiz is completed) -->
-    <div id="license-list">
-        <!-- Dynamic license entries will be inserted here based on filters -->
-        <div class="license" data-type="permissive" data-patent="no" data-liability="yes" data-trademark="no" data-warranty="yes" data-documentation="no">
-            {% include license-overview.html license-id="mit" %}
-        </div>
-        <div class="license" data-type="copyleft" data-patent="yes" data-liability="yes" data-trademark="no" data-warranty="yes" data-documentation="yes">
-            {% include license-overview.html license-id="gpl-3.0" %}
-        </div>
-        <div class="license" data-type="permissive" data-patent="yes" data-liability="yes" data-trademark="yes" data-warranty="yes" data-documentation="yes">
-            {% include license-overview.html license-id="apache-2.0" %}
-        </div>
-        <div class="license" data-type="permissive" data-patent="no" data-liability="yes" data-trademark="no" data-warranty="yes" data-documentation="no">
-            {% include license-overview.html license-id="bsd-2-clause" %}
-        </div>
-        <div class="license" data-type="permissive" data-patent="no" data-liability="yes" data-trademark="no" data-warranty="yes" data-documentation="no">
-            {% include license-overview.html license-id="bsd-3-clause" %}
-        </div>
-        <div class="license" data-type="permissive" data-patent="no" data-liability="yes" data-trademark="no" data-warranty="yes" data-documentation="no">
-            {% include license-overview.html license-id="unlicense" %}
-        </div>
-    </div>
-</div>
-
-<script>
-    const quizQuestions = [
-        { question: "Do you work in a community or team?", filter: "community" },
-        { question: "Do you use existing code as a base or some libraries?", filter: "existing-code" },
-        { question: "Do you prefer Permissive or Copyleft licenses?", filter: "permissive", secondaryFilter: "copyleft" },
-        { question: "Do you want to patent your code?", filter: "patent" },
-        { question: "Do you want to protect yourself by clearly having a limitation of liability?", filter: "liability" },
-        { question: "Do you want to protect yourself by clearly prohibiting use of Trademark?", filter: "trademark" },
-        { question: "Do you want to protect yourself by clearly not providing any warranty?", filter: "warranty" },
-        { question: "Do you mind documenting the changes you made?", filter: "documentation" }
-    ];
-    
-    let currentQuestionIndex = 0;
-    
-    function displayQuestion() {
-        const quizDialog = document.getElementById('quizDialog');
-        const questionObj = quizQuestions[currentQuestionIndex];
-        let buttonsHTML = `<button onclick="applyFilter('${questionObj.filter}')">Yes</button>`;
-        if (questionObj.secondaryFilter) {
-            buttonsHTML += `<button onclick="applyFilter('${questionObj.secondaryFilter}')">No</button>`;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>License Selector</title>
+    <style>
+        .license {
+            border: 1px solid #ccc;
+            margin: 10px;
+            padding: 10px;
         }
-        quizDialog.innerHTML = `<p>${questionObj.question}</p>` + buttonsHTML + `<button onclick="nextQuestion()">Skip</button>`;
-    }
-    
-    function applyFilter(filterValue) {
-        const filters = document.getElementById('licenseFilters').querySelectorAll('input[type="checkbox"]');
-        filters.forEach(filter => {
-            filter.checked = filter.value === filterValue;
-        });
-        updateFilters();
-        nextQuestion();
-    }
-    
-    function nextQuestion() {
-        currentQuestionIndex++;
-        displayQuestion();
-    }
-    
-    function showResults() {
-        document.getElementById('quizDialog').style.display = 'none';
-        document.getElementById('licenseFilters').style.display = 'block';
-        document.getElementById('license-list').style.display = 'block';
-    }
-    
-    function updateFilters() {
-        const filters = document.getElementById('licenseFilters').querySelectorAll('input[type="checkbox"]');
-        const licenses = document.getElementById('license-list').querySelectorAll('.license');
-        licenses.forEach(license => {
-            const isPermissive = license.getAttribute('data-type') === 'permissive';
-            const isCopyleft = license.getAttribute('data-type') === 'copyleft';
-            let isMatch = true;
-            filters.forEach(filter => {
-                if (filter.checked) {
-                    switch (filter.value) {
-                        case 'permissive':
-                            if (!isPermissive) isMatch = false;
-                            break;
-                        case 'copyleft':
-                            if (!isCopyleft) isMatch = false;
-                            break;
-                        default:
-                            if (license.getAttribute('data-' + filter.value) !== 'yes') {
-                                isMatch = false;
-                            }
-                            break;
-                    }
-                }
+    </style>
+</head>
+<body>
+    <div>
+        <!-- Permissions -->
+        <label><input type="checkbox" name="filter" value="patent-use" onchange="updateFilters()"> Patent Use</label>
+        <!-- Conditions -->
+        <label><input type="checkbox" name="filter" value="include-copyright" onchange="updateFilters()"> Include Copyright</label>
+        <label><input type="checkbox" name="filter" value="disclose-source" onchange="updateFilters()"> Disclose Source</label>
+        <label><input type="checkbox" name="filter" value="document-changes" onchange="updateFilters()"> Document Changes</label>
+        <label><input type="checkbox" name="filter" value="network-use-disclose" onchange="updateFilters()"> Network Use Disclose</label>
+        <label><input type="checkbox" name="filter" value="same-license" onchange="updateFilters()"> Same License</label>
+        <!-- Limitations -->
+        <label><input type="checkbox" name="filter" value="trademark-use" onchange="updateFilters()"> Trademark Use</label>
+        <label><input type="checkbox" name="filter" value="liability" onchange="updateFilters()"> Liability</label>
+        <label><input type="checkbox" name="filter" value="warranty" onchange="updateFilters()"> Warranty</label>
+    </div>
+
+    <!-- Example Licenses (This should be the output from Jekyll) -->
+    <div class="license">{% include license-overview.html license-id="mit" %}</div>
+    <div class="license">{% include license-overview.html license-id="gpl-3.0" %}</div>
+    <div class="license">{% include license-overview.html license-id="apache-2.0" %}</div>
+    <div class="license">{% include license-overview.html license-id="bsd-2-clause" %}</div>
+    <div class="license">{% include license-overview.html license-id="bsd-3-clause" %}</div>
+    <div class="license">{% include license-overview.html license-id="unlicense" %}</div>
+
+    <script>
+        function updateFilters() {
+            console.log("Updating filters...");
+            const filters = Array.from(document.querySelectorAll('input[name="filter"]:checked')).map(el => el.value);
+            console.log("Active filters:", filters);
+            const licenses = document.querySelectorAll('.license');
+
+            licenses.forEach(license => {
+                console.log("Checking license:", license);
+                const permissions = Array.from(license.querySelectorAll('.license-permissions li')).map(li => li.className);
+                const conditions = Array.from(license.querySelectorAll('.license-conditions li')).map(li => li.className);
+                const limitations = Array.from(license.querySelectorAll('.license-limitations li')).map(li => li.className);
+
+                let showLicense = filters.every(filter =>
+                    permissions.includes(filter) || conditions.includes(filter) || limitations.includes(filter)
+                );
+
+                console.log("Show License:", showLicense, "for", license);
+                license.style.display = showLicense ? 'block' : 'none';
             });
-            license.style.display = isMatch ? 'block' : 'none';
-        });
-        if (currentQuestionIndex >= quizQuestions.length) showResults();
-    }
-    
-    // Start the quiz
-    displayQuestion();
+        }
+
+        // Initial filter update on page load
+        document.addEventListener('DOMContentLoaded', updateFilters);
     </script>
-    
-
-<style>
-.quiz-dialog {
-    border: 1px solid #ccc;
-    padding: 20px;
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-.quiz-dialog p {
-    margin: 20px 0;
-}
-
-.quiz-dialog button {
-    margin: 0 10px;
-    padding: 5px 15px;
-}
-
-/* Additional styles can go here */
-</style>
+</body>
+</html>
