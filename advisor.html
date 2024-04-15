@@ -60,6 +60,7 @@ permalink: /advisor/
 </head>
 <body>
 
+    This quiz is designed to help you identify the most suitable software license for your project. Answer the questions to narrow down your options based on your specific requirements. You can skip questions if you prefer. To see a table of all licenses, visit <a href="appendix/">appendix</a> Page.
     <div id="quiz"></div>
 
 
@@ -187,12 +188,13 @@ permalink: /advisor/
     <div class="license">{% include license-overview.html license-id="upl-1.0" %}</div>
     <div class="license">{% include license-overview.html license-id="vim" %}</div>
     
+    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLScTT_mlS3JKLFyoO2-mtEPyr1Mh0ruu2_RrIENsVzR_KEOSTQ/viewform?embedded=true" width="800" height="640" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
     <script>
 
 const quizQuestions = [
     { 
         question: "1. Do you work in a community?",
-        detail: "If you’re contributing to or extending an existing project, it’s almost always easiest to continue using that project’s license.",
+        detail: "If you are contributing to or extending an existing project, it is almost always easiest to continue using that projects license. ",
         valueYes: "Yes", 
         valueNo: "No, I work alone"
     },
@@ -214,7 +216,7 @@ const quizQuestions = [
         question: "4. Do you want to specify state of patent license for users?",
         detail: "Clarifying the patent rights clause can protect you and your users from potential legal issues regarding the use of patents in your project",
         filter: "patent-use-filter", 
-        valueYes: "I want to give up my patent rights to users", 
+        valueYes: "I want to clearly allow or forbid this clause", 
         valueNo: "I don't want to clearly state this clause"
     },
     { 
@@ -223,6 +225,27 @@ const quizQuestions = [
         filter: "document-changes-filter", 
         valueYes: "Yes, I'll document", 
         valueNo: "No, I won't"
+    },
+    { 
+        question: "6. Do you want to protect yourself by clearly having a limitation of liability?",
+        detail: "Documenting changes is crucial for licenses that require source code modifications to be noted.",
+        filter: "liability-filter", 
+        valueYes: "Yes, I will state that I am not liable for potential issues", 
+        valueNo: "No, I I don't want to state anything"
+    },
+    { 
+        question: "7. Do you want to protect yourself by clearly not providing any warranty?",
+        detail: "Documenting changes is crucial for licenses that require source code modifications to be noted.",
+        filter: "warranty-filter", 
+        valueYes: "Yes, I will state that I don't provide warranty", 
+        valueNo: "No, I I don't want to state anything"
+    },
+    { 
+        question: "8. Do you want to protect your IP by clearly prohibiting use of Trademark?",
+        detail: "Documenting changes is crucial for licenses that require source code modifications to be noted.",
+        filter: "trademark-use-filter", 
+        valueYes: "Yes, I'll state that I protect my Intellectual property", 
+        valueNo: "No, I I don't want to state anything"
     },
     // Add more questions as needed
 ];
@@ -235,26 +258,38 @@ const quizQuestions = [
     let buttonsHTML = `
         <button onclick="applyFilter('${questionObj.filter}', 'include')">${questionObj.valueYes}</button>
         <button onclick="applyFilter('${questionObj.filter}', 'exclude')">${questionObj.valueNo}</button>
+        <button onclick="skipQuestion()">Skip</button>
     `;
     quizDialog.innerHTML = `<p>${questionObj.question}</p><p class="detail">${questionObj.detail}</p>` + buttonsHTML;
 }
 
 
 function applyFilter(filterId, value) {
-    if (currentQuestionIndex === 0) { // Check if it's the first question
-        if (value === 'include') { // User answers "Yes" for working in a community
+    if (currentQuestionIndex === 0) {
+        if (value === 'include') {
             showCommunityMessage();
-        } else { // User answers "No"
+        } else {
             nextQuestion();
         }
     } else {
-        const filterElement = document.getElementById(filterId);
-        if (filterElement) {
-            filterElement.value = value;
-            updateFilters();
+        if (filterId) { // Only apply the filter if the filterId is provided
+            const filterElement = document.getElementById(filterId);
+            if (filterElement) {
+                filterElement.value = value;
+                updateFilters();
+            }
+        }
+        if (currentQuestionIndex === 1 && value === 'include') {
+            // Specific logic for skipping Question 3 if "Yes" in Question 2
+            currentQuestionIndex++;
         }
         nextQuestion();
     }
+}
+
+
+function skipQuestion() {
+    nextQuestion();
 }
 
 
@@ -264,9 +299,18 @@ function nextQuestion() {
         displayQuestion();
     } else {
         const quizDialog = document.getElementById('quiz');
-        quizDialog.innerHTML = "<p>End of Quiz. Filters are set according to your answers.</p><button onclick='restartQuiz()'>Restart Quiz</button>";
+        quizDialog.innerHTML = "<p>End of Quiz. Filters are set according to your answers.</p><button onclick='restartQuiz()'>Restart Quiz</button> ";
     }
 }
+
+function showCommunityMessage() {
+    const quizDialog = document.getElementById('quiz');
+    quizDialog.innerHTML = `
+        <p>If you work in a community, it's best to continue using that project's license.</p>
+        <button onclick='restartQuiz()'>Restart Quiz</button>
+    `;
+}
+
 
 function restartQuiz() {
     const selects = document.querySelectorAll('select');
@@ -311,8 +355,10 @@ function showCommunityMessage() {
     document.addEventListener('DOMContentLoaded', displayQuestion);
     document.addEventListener('DOMContentLoaded', updateFilters);
     document.addEventListener('DOMContentLoaded', () => {
-        displayQuestion();  // Start the quiz
-    });
+    displayQuestion(); // Start the quiz
+    updateFilters(); // Set initial state for filters
+});
+
 
     </script>
 </body>
