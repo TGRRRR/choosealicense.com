@@ -8,9 +8,62 @@ permalink: /advisor/
 <head>
     <meta charset="UTF-8">
     <title>License Selector</title>
-    
+    <style>
+        #quiz {
+    width: 100%;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #272727;
+    border: 2px solid #5c5c5c;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    text-align: center;
+    }
+
+    #quiz p {
+        font-size: 24px; /* Larger text for questions */
+        color: #ffffff;
+        margin-top: 0;
+        margin-bottom: 20px;
+    }
+
+    #quiz button {
+        padding: 10px 20px;
+        font-size: 16px;
+        color: white;
+        background-color: #007bff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 5px;
+        transition: background-color 0.3s;
+    }
+
+    #quiz button:hover {
+        background-color: #0056b3;
+    }
+
+    #quiz button:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.5);
+    }
+
+    #quiz .detail {
+    font-size: 16px; 
+    color: #c7c7c7;
+    margin-top: 5px;
+    margin-bottom: 20px;
+    }
+
+
+    </style>
 </head>
 <body>
+
+    <div id="quiz"></div>
+
+
+
     <div class="filters"><div>
     <tr>
         <td>
@@ -135,28 +188,132 @@ permalink: /advisor/
     <div class="license">{% include license-overview.html license-id="vim" %}</div>
     
     <script>
-function updateFilters() {
-    const licenses = document.querySelectorAll('.license');
 
-    licenses.forEach(license => {
-        let isDisplayed = true;
+const quizQuestions = [
+    { 
+        question: "1. Do you work in a community?",
+        detail: "If you’re contributing to or extending an existing project, it’s almost always easiest to continue using that project’s license.",
+        valueYes: "Yes", 
+        valueNo: "No, I work alone"
+    },
+    { 
+        question: "2. Do you use copyleft external code base or libraries?",
+        detail: "If you're using code that's under a copyleft license, your project also has to be licensed under same license or similar terms to comply with those licenses conditions.",
+        filter: "same-license-filter", 
+        valueYes: "Yes", 
+        valueNo: "No, I use code with permissive license / I write from scratch"
+    },
+    { 
+        question: "3. Do you prefer permissive or copyleft licenses?",
+        detail: "Your preference will affect how restrictive the licensing is regarding how others can use, modify, and redistribute your code. <br>Copyleft license only allows users to use your code with copyleft license as well. Permissive license has no restrictions",
+        filter: "same-license-filter", 
+        valueYes: "Copyleft", 
+        valueNo: "Permissive"
+    },
+    { 
+        question: "4. Do you want to specify state of patent license for users?",
+        detail: "Clarifying the patent rights clause can protect you and your users from potential legal issues regarding the use of patents in your project",
+        filter: "patent-use-filter", 
+        valueYes: "I want to give up my patent rights to users", 
+        valueNo: "I don't want to clearly state this clause"
+    },
+    { 
+        question: "5. Do you mind documenting the changes you made?",
+        detail: "Documenting changes is crucial for licenses that require source code modifications to be noted.",
+        filter: "document-changes-filter", 
+        valueYes: "Yes, I'll document", 
+        valueNo: "No, I won't"
+    },
+    // Add more questions as needed
+];
 
-        // Handle general filters
-        document.querySelectorAll('select').forEach(select => {
-            const value = select.value; // "include", "exclude", or "all"
-            const filterName = select.id.replace('-filter', ''); // e.g., "trademark", "liability"
-            const conditions = Array.from(license.querySelectorAll('.' + filterName)).map(li => li.textContent.trim().toLowerCase());
+    let currentQuestionIndex = 0;
 
-            if (value === 'include' && !conditions.length) {
-                isDisplayed = false;
-            } else if (value === 'exclude' && conditions.length) {
-                isDisplayed = false;
-            }
-        });
-        license.style.display = isDisplayed ? 'block' : 'none';
-    });
+    function displayQuestion() {
+    const quizDialog = document.getElementById('quiz');
+    const questionObj = quizQuestions[currentQuestionIndex];
+    let buttonsHTML = `
+        <button onclick="applyFilter('${questionObj.filter}', 'include')">${questionObj.valueYes}</button>
+        <button onclick="applyFilter('${questionObj.filter}', 'exclude')">${questionObj.valueNo}</button>
+    `;
+    quizDialog.innerHTML = `<p>${questionObj.question}</p><p class="detail">${questionObj.detail}</p>` + buttonsHTML;
 }
-document.addEventListener('DOMContentLoaded', updateFilters);
+
+
+function applyFilter(filterId, value) {
+    if (currentQuestionIndex === 0) { // Check if it's the first question
+        if (value === 'include') { // User answers "Yes" for working in a community
+            showCommunityMessage();
+        } else { // User answers "No"
+            nextQuestion();
+        }
+    } else {
+        const filterElement = document.getElementById(filterId);
+        if (filterElement) {
+            filterElement.value = value;
+            updateFilters();
+        }
+        nextQuestion();
+    }
+}
+
+
+function nextQuestion() {
+    currentQuestionIndex++;
+    if (currentQuestionIndex < quizQuestions.length) {
+        displayQuestion();
+    } else {
+        const quizDialog = document.getElementById('quiz');
+        quizDialog.innerHTML = "<p>End of Quiz. Filters are set according to your answers.</p><button onclick='restartQuiz()'>Restart Quiz</button>";
+    }
+}
+
+function restartQuiz() {
+    const selects = document.querySelectorAll('select');
+    selects.forEach(select => {
+        select.value = 'all'; // Assuming 'all' is the default state
+    });
+    updateFilters(); // Update the filters based on reset values
+    currentQuestionIndex = 0; // Reset the index to the first question
+    displayQuestion(); // Display the first question again
+}
+
+function showCommunityMessage() {
+    const quizDialog = document.getElementById('quiz');
+    quizDialog.innerHTML = `
+        <p>If you work in a community, it's best to continue using that project's license.</p>
+        <button onclick='restartQuiz()'>Restart Quiz</button>
+    `;
+}
+
+
+    function updateFilters() {
+        const licenses = document.querySelectorAll('.license');
+
+        licenses.forEach(license => {
+            let isDisplayed = true;
+
+            // Handle general filters
+            document.querySelectorAll('select').forEach(select => {
+                const value = select.value; // "include", "exclude", or "all"
+                const filterName = select.id.replace('-filter', ''); // e.g., "trademark", "liability"
+                const conditions = Array.from(license.querySelectorAll('.' + filterName)).map(li => li.textContent.trim().toLowerCase());
+
+                if (value === 'include' && !conditions.length) {
+                    isDisplayed = false;
+                } else if (value === 'exclude' && conditions.length) {
+                    isDisplayed = false;
+                }
+            });
+            license.style.display = isDisplayed ? 'block' : 'none';
+        });
+    }
+    document.addEventListener('DOMContentLoaded', displayQuestion);
+    document.addEventListener('DOMContentLoaded', updateFilters);
+    document.addEventListener('DOMContentLoaded', () => {
+        displayQuestion();  // Start the quiz
+    });
+
     </script>
 </body>
 </html>
