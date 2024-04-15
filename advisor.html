@@ -177,13 +177,13 @@ permalink: /advisor/
     <div class="license">{% include license-overview.html license-id="bsd-3-clause-clear" %}</div>
     <div class="license">{% include license-overview.html license-id="bsd-4-clause" %}</div>
     <div class="license">{% include license-overview.html license-id="bsl-1.0" %}</div>
-    <div class="license">{% include license-overview.html license-id="cc0-1.0" %}</div>
-    <div class="license">{% include license-overview.html license-id="cc-by-4.0" %}</div>
-    <div class="license">{% include license-overview.html license-id="cc-by-sa-4.0" %}</div>
+    <!-- <div class="license">{% include license-overview.html license-id="cc0-1.0" %}</div> -->
+    <!-- <div class="license">{% include license-overview.html license-id="cc-by-4.0" %}</div> -->
+    <!-- <div class="license">{% include license-overview.html license-id="cc-by-sa-4.0" %}</div> -->
     <div class="license">{% include license-overview.html license-id="cecill-2.1" %}</div>
-    <div class="license">{% include license-overview.html license-id="cern-ohl-p-2.0" %}</div>
-    <div class="license">{% include license-overview.html license-id="cern-ohl-s-2.0" %}</div>
-    <div class="license">{% include license-overview.html license-id="cern-ohl-w-2.0" %}</div>
+    <!-- <div class="license">{% include license-overview.html license-id="cern-ohl-p-2.0" %}</div> -->
+    <!-- <div class="license">{% include license-overview.html license-id="cern-ohl-s-2.0" %}</div> -->
+    <!-- <div class="license">{% include license-overview.html license-id="cern-ohl-w-2.0" %}</div> -->
     <div class="license">{% include license-overview.html license-id="ecl-2.0" %}</div>
     <div class="license">{% include license-overview.html license-id="epl-1.0" %}</div>
     <div class="license">{% include license-overview.html license-id="epl-2.0" %}</div>
@@ -207,7 +207,7 @@ permalink: /advisor/
     <div class="license">{% include license-overview.html license-id="unlicense" %}</div>
     <div class="license">{% include license-overview.html license-id="zlib" %}</div>
     <div class="license">{% include license-overview.html license-id="postgresql" %}</div>
-    <div class="license">{% include license-overview.html license-id="ofl-1.1" %}</div>
+    <!-- <div class="license">{% include license-overview.html license-id="ofl-1.1" %}</div> -->
     <div class="license">{% include license-overview.html license-id="osl-3.0" %}</div>
     <div class="license">{% include license-overview.html license-id="wtfpl" %}</div>
     <div class="license">{% include license-overview.html license-id="odbl-1.0" %}</div>
@@ -246,18 +246,18 @@ const quizQuestions = [
         valueNo: "No, I don't want to"
     },
     { 
-        question: "5. Do you want to specify state of patent license for users?",
-        detail: "Clarifying the patent rights clause can protect you and your users from potential legal issues regarding the use of patents in your project",
-        filter: "patent-use-filter", 
-        valueYes: "I want to clearly allow or forbid this clause", 
-        valueNo: "I don't want to clearly state this clause"
-    },
-    { 
-        question: "6. Do you mind documenting the changes you made?",
+        question: "5. Do you mind documenting the changes you made?",
         detail: "Documenting changes is crucial for licenses that require source code modifications to be noted.",
         filter: "document-changes-filter", 
         valueYes: "Yes, I'll document", 
         valueNo: "No, I won't"
+    },
+    { 
+        question: "6. Do you want to specify state of patent license for users?",
+        detail: "Clarifying the patent rights clause can protect you and your users from potential legal issues regarding the use of patents in your project",
+        filter: "patent-use-filter", 
+        valueYes: "I want to clearly allow or forbid this clause", 
+        valueNo: "I don't want to clearly state this clause"
     },
     { 
         question: "7. Do you want to protect yourself by clearly having a limitation of liability?",
