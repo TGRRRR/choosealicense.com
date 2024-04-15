@@ -17,7 +17,6 @@ permalink: /advisor/
     border: 2px solid #5c5c5c;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     border-radius: 8px;
-    text-align: center;
     }
 
     #quiz p {
@@ -31,7 +30,7 @@ permalink: /advisor/
         padding: 10px 20px;
         font-size: 16px;
         color: white;
-        background-color: #007bff;
+        background-color: #1699d2;
         border: none;
         border-radius: 5px;
         cursor: pointer;
@@ -55,90 +54,117 @@ permalink: /advisor/
     margin-bottom: 20px;
     }
 
+    .filters {
+    display: flex;
+    justify-content: space-between; /* This will space the columns evenly */
+    }
+
+    .filter-column {
+        flex: 1; /* Each column takes up equal space */
+        padding: 10px; /* Add some padding around each column */
+    }
+
 
     </style>
 </head>
 <body>
 
-    This quiz is designed to help you identify the most suitable software license for your project. Answer the questions to narrow down your options based on your specific requirements. You can skip questions if you prefer. To see a table of all licenses, visit <a href="appendix/">appendix</a> Page.
+    This advisor is designed to help you identify the most suitable open source license for your project. Answer the questions to narrow down your options based on your specific requirements. You can skip questions if you prefer. To see a table of all licenses, visit <a href="/appendix">appendix</a> Page.
+    <p>All open source licenses grant to the public <span class="license-permissions"><span class="license-sprite"></span></span> <b>permissions</b> to do things with licensed works which copyright or other IP laws might otherwise disallow.<br>
+    Most open source licenses' grants of permissions are subject to compliance with <span class="license-conditions"><span class="license-sprite"></span></span> <b>conditions</b>.<br>
+    Most open source licenses have <span class="license-limitations"><span class="license-sprite"></span></span> <b>limitations</b> that disclaim warranty and liability, or expressly exclude patents or trademarks from licenses' grants.</p>
+
     <div id="quiz"></div>
 
+    
 
-
-    <div class="filters"><div>
-    <tr>
-        <td>
+    <div class="filters" id="quiz">
+        <div class="filter-column">
+            <!-- Conditions -->
+            <ul class="license-conditions">
+                <li>
+                    <span class="license-sprite"></span>
+                    <label for="same-license-filter">Same license:</label>
+                    <select id="same-license-filter" onchange="updateFilters()">
+                        <option value="all">Any</option>
+                        <option value="include">Include same license</option>
+                        <option value="exclude">Exclude same license</option>
+                    </select>
+                </li>
+                <li>
+                    <span class="license-sprite"></span>
+                    <label for="network-use-disclose-filter">Network use:</label>
+                    <select id="network-use-disclose-filter" onchange="updateFilters()">
+                        <option value="all">Any</option>
+                        <option value="include">Include Network use</option>
+                        <option value="exclude">Exclude Network use</option>
+                    </select>
+                </li>
+                <li>
+                    <span class="license-sprite"></span>
+                    <label for="document-changes-filter">State Changes:</label>
+                    <select id="document-changes-filter" onchange="updateFilters()">
+                        <option value="all">Any</option>
+                        <option value="include">Include State Changes</option>
+                        <option value="exclude">Exclude State Changes</option>
+                    </select>
+                </li>
+                <li>
+                    <span class="license-sprite"></span>
+                    <label for="include-copyright-filter">Copyright notice:</label>
+                    <select id="include-copyright-filter" onchange="updateFilters()">
+                        <option value="all">Any</option>
+                        <option value="include">Include Copyright notice</option>
+                        <option value="exclude">Exclude Copyright notice</option>
+                    </select>
+                </li>
+            </ul>
+        </div>
+        <div class="filter-column">
+            <!-- Permissions and Limitations -->
             <ul class="license-permissions">
                 <li>
                     <span class="license-sprite"></span>
-                    <!-- Permissions -->
                     <label for="patent-use-filter">Patent Use:</label>
                     <select id="patent-use-filter" onchange="updateFilters()">
-                        <option value="all">any</option>
+                        <option value="all">Any</option>
                         <option value="include">Include Patent Use</option>
                         <option value="exclude">Exclude Patent Use</option>
                     </select>
                 </li>    
             </ul>
-        </td>     
-        <td>
-            <ul class="license-conditions">
-                <li>
-                    <span class="license-sprite"></span>
-                    <!-- Conditions -->
-                    <label for="same-license-filter">same license:</label>
-                    <select id="same-license-filter" onchange="updateFilters()">
-                        <option value="all">any</option>
-                        <option value="include">Include same license</option>
-                        <option value="exclude">Exclude same license</option>
-                    </select>
-                </li>
-                <li></li>
-                    <span class="license-sprite"></span>
-                    <label for="document-changes-filter">Document Changes:</label>
-                    <select id="document-changes-filter" onchange="updateFilters()">
-                        <option value="all">any</option>
-                        <option value="include">Include Document Changes</option>
-                        <option value="exclude">Exclude Document Changes</option>
-                    </select>
-                </li>
-            </ul>
-        </td>
-        <td>
             <ul class="license-limitations">
-            <!-- Limitations -->
-
                 <li>
-                  <span class="license-sprite"></span>
-                  <label for="liability-filter">Liability:</label>
-                  <select id="liability-filter" onchange="updateFilters()">
-                      <option value="all">any</option>
-                      <option value="include">Include Liability</option>
-                      <option value="exclude">Exclude Liability</option>
-                  </select>
+                    <span class="license-sprite"></span>
+                    <label for="liability-filter">Liability:</label>
+                    <select id="liability-filter" onchange="updateFilters()">
+                        <option value="all">Any</option>
+                        <option value="include">Include Liability</option>
+                        <option value="exclude">Exclude Liability</option>
+                    </select>
                 </li>
                 <li>
-                  <span class="license-sprite"></span>
-                  <label for="warranty-filter">Warranty:</label>
-                  <select id="warranty-filter" onchange="updateFilters()">
-                      <option value="all">any</option>
-                      <option value="include">Include Warranty</option>
-                      <option value="exclude">Exclude Warranty</option>
-                  </select>
+                    <span class="license-sprite"></span>
+                    <label for="warranty-filter">Warranty:</label>
+                    <select id="warranty-filter" onchange="updateFilters()">
+                        <option value="all">Any</option>
+                        <option value="include">Include Warranty</option>
+                        <option value="exclude">Exclude Warranty</option>
+                    </select>
                 </li>
                 <li>
                     <span class="license-sprite"></span>
                     <label for="trademark-use-filter">Trademark:</label>
                     <select id="trademark-use-filter" onchange="updateFilters()">
-                        <option value="all">any</option>
+                        <option value="all">Any</option>
                         <option value="include">Include Trademark</option>
                         <option value="exclude">Exclude Trademark</option>
                     </select>
                 </li>
             </ul>
-        </td>
-    </tr>
+        </div>
     </div>
+    
 
     <div class="license">{% include license-overview.html license-id="0bsd" %}</div>
     <div class="license">{% include license-overview.html license-id="afl-3.0" %}</div>
@@ -194,12 +220,12 @@ permalink: /advisor/
 const quizQuestions = [
     { 
         question: "1. Do you work in a community?",
-        detail: "If you are contributing to or extending an existing project, it is almost always easiest to continue using that projects license. ",
-        valueYes: "Yes", 
+        detail: "Workiing in community means working on some already existing projects, or working with a team. <a href='/community'>read more</a>",
+        valueYes: "Yes, I work in a community", 
         valueNo: "No, I work alone"
     },
     { 
-        question: "2. Do you use copyleft external code base or libraries?",
+        question: "2. Do you use copyleft code base or libraries?",
         detail: "If you're using code that's under a copyleft license, your project also has to be licensed under same license or similar terms to comply with those licenses conditions.",
         filter: "same-license-filter", 
         valueYes: "Yes", 
@@ -213,35 +239,42 @@ const quizQuestions = [
         valueNo: "Permissive"
     },
     { 
-        question: "4. Do you want to specify state of patent license for users?",
+        question: "4. If you develop a web project, do you mind giving online users access to source code?",
+        detail: "Defining network use as distribution extends the rights and responsibilities associated with the software to those using it over a network. This means that even remote users can access the source code, preserving the open nature of the software",
+        filter: "network-use-disclose-filter", 
+        valueYes: "Yes, I will provide access to source code", 
+        valueNo: "No, I don't want to"
+    },
+    { 
+        question: "5. Do you want to specify state of patent license for users?",
         detail: "Clarifying the patent rights clause can protect you and your users from potential legal issues regarding the use of patents in your project",
         filter: "patent-use-filter", 
         valueYes: "I want to clearly allow or forbid this clause", 
         valueNo: "I don't want to clearly state this clause"
     },
     { 
-        question: "5. Do you mind documenting the changes you made?",
+        question: "6. Do you mind documenting the changes you made?",
         detail: "Documenting changes is crucial for licenses that require source code modifications to be noted.",
         filter: "document-changes-filter", 
         valueYes: "Yes, I'll document", 
         valueNo: "No, I won't"
     },
     { 
-        question: "6. Do you want to protect yourself by clearly having a limitation of liability?",
+        question: "7. Do you want to protect yourself by clearly having a limitation of liability?",
         detail: "Documenting changes is crucial for licenses that require source code modifications to be noted.",
         filter: "liability-filter", 
         valueYes: "Yes, I will state that I am not liable for potential issues", 
         valueNo: "No, I I don't want to state anything"
     },
     { 
-        question: "7. Do you want to protect yourself by clearly not providing any warranty?",
+        question: "8. Do you want to protect yourself by clearly not providing any warranty?",
         detail: "Documenting changes is crucial for licenses that require source code modifications to be noted.",
         filter: "warranty-filter", 
         valueYes: "Yes, I will state that I don't provide warranty", 
         valueNo: "No, I I don't want to state anything"
     },
     { 
-        question: "8. Do you want to protect your IP by clearly prohibiting use of Trademark?",
+        question: "9. Do you want to protect your IP by clearly prohibiting use of Trademark?",
         detail: "Documenting changes is crucial for licenses that require source code modifications to be noted.",
         filter: "trademark-use-filter", 
         valueYes: "Yes, I'll state that I protect my Intellectual property", 
@@ -256,9 +289,10 @@ const quizQuestions = [
     const quizDialog = document.getElementById('quiz');
     const questionObj = quizQuestions[currentQuestionIndex];
     let buttonsHTML = `
+        <button onclick="skipQuestion()">Skip</button>
         <button onclick="applyFilter('${questionObj.filter}', 'include')">${questionObj.valueYes}</button>
         <button onclick="applyFilter('${questionObj.filter}', 'exclude')">${questionObj.valueNo}</button>
-        <button onclick="skipQuestion()">Skip</button>
+
     `;
     quizDialog.innerHTML = `<p>${questionObj.question}</p><p class="detail">${questionObj.detail}</p>` + buttonsHTML;
 }
@@ -306,7 +340,7 @@ function nextQuestion() {
 function showCommunityMessage() {
     const quizDialog = document.getElementById('quiz');
     quizDialog.innerHTML = `
-        <p>If you work in a community, it's best to continue using that project's license.</p>
+        <p>If you are contributing to community, it is easier to continue using that project's license. <a href='/community'>Read more</a> about community and finding what license it uses.</p>
         <button onclick='restartQuiz()'>Restart Quiz</button>
     `;
 }
@@ -320,14 +354,6 @@ function restartQuiz() {
     updateFilters(); // Update the filters based on reset values
     currentQuestionIndex = 0; // Reset the index to the first question
     displayQuestion(); // Display the first question again
-}
-
-function showCommunityMessage() {
-    const quizDialog = document.getElementById('quiz');
-    quizDialog.innerHTML = `
-        <p>If you work in a community, it's best to continue using that project's license.</p>
-        <button onclick='restartQuiz()'>Restart Quiz</button>
-    `;
 }
 
 
