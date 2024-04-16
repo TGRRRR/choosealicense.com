@@ -63,19 +63,11 @@ permalink: /advisor/
         padding: 10px; /* Add some padding around each column */
     }
 
-    #filters p {
-        font-size: 24px; /* Larger text for questions */
-        color: #ffffff;
-        margin-top: 0;
-        margin-bottom: 20px;
-    }
-
-
     </style>
 </head>
 <body>
 
-    This advisor is designed to help beginner developers identify the most suitable open source license for your project. Answer the questions to narrow down your options based on your specific requirements. You can skip questions if you prefer. To see a table of all licenses, visit <a href="/appendix">appendix</a> Page. <br>You can also check out the <a href=https://github.com/TGRRRR/choosealicense.com>source code of this site</a>.
+    This advisor is designed to help beginner developers identify the most suitable open source license for their project. Answer the questions to narrow down your options based on your specific requirements. You can skip questions if you are not sure. To see a table of all licenses, visit <a href="/appendix">appendix</a> Page. <br> Read more <a href=https://choosealicense.com/about>about the purpose</a> of this site. Also check out the <a href=https://github.com/TGRRRR/choosealicense.com>source code of this site</a>.
 
     <p>All open source licenses grant to the public <span class="license-permissions"><span class="license-sprite"></span></span> <b>permissions</b> to do things with licensed works which copyright or other IP laws might otherwise disallow.<br>
         Most open source licenses' grants of permissions are subject to compliance with <span class="license-conditions"><span class="license-sprite"></span></span> <b>conditions</b>.<br>
@@ -217,7 +209,7 @@ permalink: /advisor/
 const quizQuestions = [
     { 
         question: "1. Do you work in a community?",
-        detail: "Workiing in community means working on some already existing projects, or working with a team. <a href='/community'>read more</a>",
+        detail: "Workiing in community means working on some already existing projects as a contributor, or working with a team. <a href='/community'>read more</a>",
         valueYes: "Yes, I work in a community", 
         valueNo: "No, I work alone"
     },
@@ -239,22 +231,22 @@ const quizQuestions = [
         question: "4. If you develop a web copyleft project, do you want to make giving online users access to source code mandatory?",
         detail: "This clause prohibits users of your code from modifying it and then using it online as a closed source web project, as even remote users should have access to the source code, preserving the open nature of the software",
         filter: "network-use-disclose-filter", 
-        valueYes: "Yes, I will provide access to source code", 
-        valueNo: "No, I don't want to"
+        valueYes: "Yes, I will require access to source code even for network users", 
+        valueNo: "No, network use is not distribution"
     },
     { 
         question: "5. Do you want to force users to document the changes they made in your code?",
         detail: "If you want any change (by users who modify and redestribute your work) in your work to be documented (so that is clear where is your original code is and where the user changes are) you can choose a license with this requirement.",
         filter: "document-changes-filter", 
-        valueYes: "Yes, I'll document", 
-        valueNo: "No, I won't"
+        valueYes: "Yes, I want all the changes to my code be documented", 
+        valueNo: "No, I don't mind undocumented changes"
     },
     { 
         question: "6. Do you want to specify state of patent license for users?",
         detail: "Clarifying the patent rights clause can clearly allow or prohibit users to use a patented tech from your project in their projects. Allowing it can protect your users from potential lawsuits from you or contributors of your project",
         filter: "patent-use-filter", 
-        valueYes: "I want to clearly allow or forbid this clause", 
-        valueNo: "I don't want to clearly state this clause"
+        valueYes: "I want to clearly allow or forbid patent use", 
+        valueNo: "I don't want to clearly state patent use"
     },
     { 
         question: "7. Do you want to protect yourself by clearly having a limitation of liability?",
@@ -293,7 +285,6 @@ const quizQuestions = [
     `;
     quizDialog.innerHTML = `<p>${questionObj.question}</p><p class="detail">${questionObj.detail}</p>` + buttonsHTML;
 }
-
 
 function applyFilter(filterId, value) {
     if (currentQuestionIndex === 0) {
@@ -337,7 +328,7 @@ function nextQuestion() {
         displayQuestion();
     } else {
         const quizDialog = document.getElementById('quiz');
-        quizDialog.innerHTML = "<p>End of Quiz. Filters are set according to your answers.</p><button onclick='restartQuiz()'>Restart Quiz</button> ";
+        quizDialog.innerHTML = "<p>End of Quiz. Filters are set according to your answers. <br>If you still haven't found what you need, at least you now clearly know what to look for. Visit <a href=https://joinup.ec.europa.eu/collection/eupl/solution/joinup-licensing-assistant/jla-find-and-compare-software-licenses>europa.eu</a> or <a href=https://opensource.org/license>opensource.org</a> for more comprehensive database. </p><button onclick='restartQuiz()'>Restart Quiz</button> ";
     }
 }
 
