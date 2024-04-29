@@ -73,13 +73,18 @@ permalink: /advisor/
         Most open source licenses' grants of permissions are subject to compliance with <span class="license-conditions"><span class="license-sprite"></span></span> <b>conditions</b>.<br>
         Most open source licenses have <span class="license-limitations"><span class="license-sprite"></span></span> <b>limitations</b> that disclaim warranty and liability, or expressly exclude patents or trademarks from licenses' grants.</p>
 
-    <div id="quiz"></div>
+    <h2>License Wizard</h2>
+    <p>If you don't know anything about licenses, then you can go through this wizard and it will fill in the filter values based on your answers</p>
+        <div id="quiz"></div>
+
+    <h2>Filters</h2>
+    <p>If you understand what all these filters mean, then use these filters and you can skip the wizard</p>
 
     <div class="filters" id="quiz">
-        
         <div class="filter-column">
             <!-- Conditions -->
             <ul class="license-conditions">
+                <h3>Conditions</h3>
                 <li>
                     <span class="license-sprite"></span>
                     <label for="same-license-filter">Same license:</label>
@@ -119,6 +124,7 @@ permalink: /advisor/
             </ul>
         </div>
         <div class="filter-column">
+            <h3>Permission and Limitations</h3>
             <!-- Permissions and Limitations -->
             <ul class="license-permissions">
                 <li>
@@ -162,6 +168,7 @@ permalink: /advisor/
             </ul>
         </div>
     </div>
+    <h2>Below is a list of licenses that match your needs:</h2>
 
     <div class="license">{% include license-overview.html license-id="0bsd" %}</div>
     <div class="license">{% include license-overview.html license-id="afl-3.0" %}</div>
@@ -179,7 +186,6 @@ permalink: /advisor/
     <div class="license">{% include license-overview.html license-id="epl-1.0" %}</div>
     <div class="license">{% include license-overview.html license-id="epl-2.0" %}</div>
     <div class="license">{% include license-overview.html license-id="eupl-1.2" %}</div>
-    <div class="license">{% include license-overview.html license-id="gfdl-1.3" %}</div>
     <div class="license">{% include license-overview.html license-id="agpl-3.0" %}</div>
     <div class="license">{% include license-overview.html license-id="gpl-2.0" %}</div>
     <div class="license">{% include license-overview.html license-id="gpl-3.0" %}</div>
@@ -203,67 +209,66 @@ permalink: /advisor/
     <div class="license">{% include license-overview.html license-id="upl-1.0" %}</div>
     <div class="license">{% include license-overview.html license-id="vim" %}</div>
     
-    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLScTT_mlS3JKLFyoO2-mtEPyr1Mh0ruu2_RrIENsVzR_KEOSTQ/viewform?embedded=true" width="800" height="640" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
     <script>
 
 const quizQuestions = [
     { 
-        question: "1. Do you work in a community?",
+        question: "Start the wizard?",
         detail: "Workiing in community means working on some already existing projects as a contributor, or working with a team. <a href='/community'>read more</a>",
-        valueYes: "Yes, I work in a community", 
-        valueNo: "No, I work alone"
+        valueYes: "Yes", 
+        valueNo: "I work alone, start wizard"
     },
     { 
-        question: "2. Do you use copyleft code base or libraries?",
+        question: "1/8 Do you use copyleft code base or libraries?",
         detail: "If you're using code that's under a copyleft license, your project also has to be licensed under same license or similar terms to comply with those licenses conditions.",
         filter: "same-license-filter", 
         valueYes: "Yes", 
         valueNo: "No, I use code with permissive license / I write from scratch"
     },
     { 
-        question: "3. Do you prefer permissive or copyleft licenses?",
+        question: "2/8 Do you prefer permissive or copyleft licenses?",
         detail: "It will affect how restrictive the licensing is regarding how others can use, modify, and redistribute your code. <br>Copyleft license only allows users to use your code with copyleft license as well, which means all modifications will also remain free and open source and no commercial or closed source fork is allowed. <br>Permissive license has no restrictions, so anyone can take your code and use it in their project, be it commercial or open source",
         filter: "same-license-filter", 
         valueYes: "Copyleft", 
         valueNo: "Permissive"
     },
     { 
-        question: "4. If you develop a web copyleft project, do you want to make giving online users access to source code mandatory?",
+        question: "3/8 If you develop a web copyleft project, do you want to make giving online users access to source code mandatory?",
         detail: "This clause prohibits users of your code from modifying it and then using it online as a closed source web project, as even remote users should have access to the source code, preserving the open nature of the software",
         filter: "network-use-disclose-filter", 
         valueYes: "Yes, I will require access to source code even for network users", 
         valueNo: "No, network use is not distribution"
     },
     { 
-        question: "5. Do you want to force users to document the changes they made in your code?",
+        question: "4/8 Do you want to force users to document the changes they made in your code?",
         detail: "If you want any change (by users who modify and redestribute your work) in your work to be documented (so that is clear where is your original code is and where the user changes are) you can choose a license with this requirement.",
         filter: "document-changes-filter", 
         valueYes: "Yes, I want all the changes to my code be documented", 
         valueNo: "No, I don't mind undocumented changes"
     },
     { 
-        question: "6. Do you want to specify state of patent license for users?",
+        question: "5/8 Do you want to specify state of patent license for users?",
         detail: "Clarifying the patent rights clause can clearly allow or prohibit users to use a patented tech from your project in their projects. Allowing it can protect your users from potential lawsuits from you or contributors of your project",
         filter: "patent-use-filter", 
         valueYes: "I want to clearly allow or forbid patent use", 
         valueNo: "I don't want to clearly state patent use"
     },
     { 
-        question: "7. Do you want to protect yourself by clearly having a limitation of liability?",
+        question: "6/8 Do you want to protect yourself by clearly having a limitation of liability?",
         detail: "Basically, you will not be liable for any potential issues caused by your code. <br><br>Including a limitation of liability clause can protect you from lawsuits for damages caused by the use of your software. This clause is important when users rely on your software for critical functions, as it specifies that you are not liable for any resulting issues.",
         filter: "liability-filter", 
         valueYes: "Yes, I will state that I am not liable for potential issues", 
         valueNo: "No, I I don't want to state anything"
     },
     { 
-        question: "8. Do you want to protect yourself by clearly not providing any warranty?",
+        question: "7/8 Do you want to protect yourself by clearly not providing any warranty?",
         detail: "Basically, you will not promise users of your code anything about its performance, quality, or suitability. <br><br>Stating that you do not provide any warranty with your software is crucial to manage user expectations and legal risks. This clause informs users that they are using the software at their own risk and that you do not guarantee its performance, quality, or suitability.",
         filter: "warranty-filter", 
         valueYes: "Yes, I will state that I don't provide warranty", 
         valueNo: "No, I I don't want to state anything"
     },
     { 
-        question: "9. Do you want to protect your IP by clearly prohibiting use of Trademark?",
+        question: "8/8 Do you want to protect your IP by clearly prohibiting use of Trademark?",
         detail: "Basically, people who modify and distribute your application are not allowed to use your app name, logo, slogan, etc. <br><br>Prohibiting the use of your trademark by others is important to protect your brand identity and intellectual property. This clause helps prevent confusion and misuse of your trademark, ensuring that only authorized use associated with your direct products is allowed.",
         filter: "trademark-use-filter", 
         valueYes: "Yes, I'll state that I protect my Intellectual property", 
