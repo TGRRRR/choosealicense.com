@@ -9,7 +9,7 @@ permalink: /advisor/
     <meta charset="UTF-8">
     <title>License Advisor</title>
     <style>
-        #quiz {
+    #quiz {
     width: 100%;
     margin: 20px auto;
     padding: 20px;
@@ -43,8 +43,7 @@ permalink: /advisor/
     }
 
     #quiz button:focus {
-        outline: none;
-        box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.5);
+        background-color: green; /* Selected state color */
     }
 
     #quiz .detail {
@@ -63,16 +62,17 @@ permalink: /advisor/
         padding: 10px; /* Add some padding around each column */
     }
 
+    .active {
+  background-color: green; /* Selected state color */
+    }
+
+    .inactive {
+    background-color: red; /* Unselected state color */
+    }
+
     </style>
 </head>
 <body>
-
-    This advisor is designed to help beginner developers identify the most suitable open source license for their project. Answer the questions to narrow down your options based on your specific requirements. You can skip questions if you are not sure. To see a table of all licenses, visit <a href="/appendix">appendix</a> Page. <br> Read more <a href=https://choosealicense.com/about>about the purpose</a> of this site. Also check out the <a href=https://github.com/TGRRRR/choosealicense.com>source code of this site</a>.
-
-    <p>All open source licenses grant to the public <span class="license-permissions"><span class="license-sprite"></span></span> <b>permissions</b> to do things with licensed works which copyright or other IP laws might otherwise disallow.<br>
-        Most open source licenses' grants of permissions are subject to compliance with <span class="license-conditions"><span class="license-sprite"></span></span> <b>conditions</b>.<br>
-        Most open source licenses have <span class="license-limitations"><span class="license-sprite"></span></span> <b>limitations</b> that disclaim warranty and liability, or expressly exclude patents or trademarks from licenses' grants.</p>
-
     <h2>License Wizard</h2>
     <p>If you don't know anything about licenses, then you can go through this wizard and it will fill in the filter values based on your answers</p>
         <div id="quiz"></div>
@@ -208,15 +208,11 @@ permalink: /advisor/
     <div class="license">{% include license-overview.html license-id="odbl-1.0" %}</div>
     <div class="license">{% include license-overview.html license-id="upl-1.0" %}</div>
     <div class="license">{% include license-overview.html license-id="vim" %}</div>
-    
-    <script>
+<script>
 
 const quizQuestions = [
     { 
-        question: "Start the wizard?",
-        detail: "Workiing in community means working on some already existing projects as a contributor, or working with a team. <a href='/community'>read more</a>",
-        valueYes: "Yes", 
-        valueNo: "I work alone, start wizard"
+        question: "0/8 hardcode",
     },
     { 
         question: "1/8 Do you use copyleft code base or libraries?",
@@ -237,7 +233,7 @@ const quizQuestions = [
         detail: "This clause prohibits users of your code from modifying it and then using it online as a closed source web project, as even remote users should have access to the source code, preserving the open nature of the software",
         filter: "network-use-disclose-filter", 
         valueYes: "Yes, I will require access to source code even for network users", 
-        valueNo: "No, network use is not distribution"
+        valueNo: "No, I don't want"
     },
     { 
         question: "4/8 Do you want to force users to document the changes they made in your code?",
@@ -274,115 +270,86 @@ const quizQuestions = [
         valueYes: "Yes, I'll state that I protect my Intellectual property", 
         valueNo: "No, I I don't want to state anything"
     },
-    // Add more questions as needed
-];
+    ];
 
-    let currentQuestionIndex = 0;
+let currentQuestionIndex = 0;
 
-    function displayQuestion() {
+function nextQuestion() {
+    currentQuestionIndex++; 
+    displayQuestion();
+}
+
+function backQuestion() {
+    currentQuestionIndex--; 
+    displayQuestion();
+}
+
+function displayQuestion() {
     const quizDialog = document.getElementById('quiz');
     const questionObj = quizQuestions[currentQuestionIndex];
     let buttonsHTML = `
-        <button onclick="skipQuestion()">Skip</button>
-        <button onclick="applyFilter('${questionObj.filter}', 'include')">${questionObj.valueYes}</button>
-        <button onclick="applyFilter('${questionObj.filter}', 'exclude')">${questionObj.valueNo}</button>
-
+        <button onclick="backQuestion()">↤ Back</button>
+        <button id="myButton" onclick="updateFilters('${questionObj.filter}', 'include')">${questionObj.valueYes}</button>
+        <button id="myButton" onclick="updateFilters('${questionObj.filter}', 'exclude')">${questionObj.valueNo}</button>
     `;
-    quizDialog.innerHTML = `<p>${questionObj.question}</p><p class="detail">${questionObj.detail}</p>` + buttonsHTML;
-}
-
-function applyFilter(filterId, value) {
     if (currentQuestionIndex === 0) {
-        if (value === 'include') {
-            showCommunityMessage();
-        } else {
-            nextQuestion();
-        }
+        quizDialog.innerHTML = "<h1>Start the wizard?</h1>If you are contributing to community, it is easier to continue using that project's license. <a href='/community'>Read more</a> about community and finding what license it uses. <br><br>This advisor is designed to help beginner developers identify the most suitable open source license for their project. Answer the questions to narrow down your options based on your specific requirements. You can skip questions if you are not sure. To see a table of all licenses, visit <a href='/appendix'>appendix</a> Page. <br> Read more <a href=https://choosealicense.com/about>about the purpose</a> of this site. Also check out the <a href=https://github.com/TGRRRR/choosealicense.com>source code of this site</a>.<br><br>All open source licenses grant to the public <span class='license-permissions'><span class='license-sprite'></span></span> <b>permissions</b> to do things with licensed works which copyright or other IP laws might otherwise disallow.<br>Most open source licenses' grants of permissions are subject to compliance with <span class='license-conditions'><span class='license-sprite'></span></span> <b>conditions</b>.<br>Most open source licenses have <span class='license-limitations'><span class='license-sprite'></span></span> <b>limitations</b> that disclaim warranty and liability, or expressly exclude patents or trademarks from licenses' grants.<br><button onclick='nextQuestion()'>Start quiz</button>";
+    }
+    else if (currentQuestionIndex === 7) {
+        quizDialog.innerHTML = `<h2>${questionObj.question}</h2><p class="detail">${questionObj.detail}</p>` + buttonsHTML;
+    }
+    else {
+        quizDialog.innerHTML = `<h2>${questionObj.question}</h2><p class="detail">${questionObj.detail}</p>` + buttonsHTML + '<button onclick="nextQuestion()">Next ↦</button>';
+    }
+    updateButton(filterValue);
+}
+
+function updateButton(filterValue) {
+    const button = document.getElementById('myButton');
+
+    // Remove existing classes
+    button.classList.remove('active', 'inactive');
+
+    // Add class based on filter value
+    if (filterValue === 'include') {
+    button.classList.add('active');
     } else {
-        if (filterId) { // Only apply the filter if the filterId is provided
-            const filterElement = document.getElementById(filterId);
-            if (filterElement) {
-                filterElement.value = value;
-                updateFilters();
+    button.classList.add('inactive');
+    }
+}
+
+function updateFilters(filterId, value) {
+    const filterElement = document.getElementById(filterId);
+    if (filterElement) {
+        filterElement.value = value;
+        updateFilters();
+    }
+    const licenses = document.querySelectorAll('.license');
+    licenses.forEach(license => {
+        let isDisplayed = true;
+
+        // Handle general filters
+        document.querySelectorAll('select').forEach(select => {
+            const value = select.value; // "include", "exclude", or "all"
+            const filterName = select.id.replace('-filter', ''); // e.g., "trademark", "liability"
+            const conditions = Array.from(license.querySelectorAll('.' + filterName)).map(li => li.textContent.trim().toLowerCase());
+
+            if (value === 'include' && !conditions.length) {
+                isDisplayed = false;
+            } else if (value === 'exclude' && conditions.length) {
+                isDisplayed = false;
             }
-        }
-
-        // Adjustments to handle specific skips based on answers
-        if (currentQuestionIndex === 1 && value === 'include') {
-            // Skips Question 3 if "Yes" in Question 2
-            currentQuestionIndex++;
-        }
-
-        if (currentQuestionIndex === 2 && value === 'exclude') {
-            // Skips Question 4 about network use if "Permissive" is selected in Question 3
-            currentQuestionIndex++;
-        }
-
-        nextQuestion();
-    }
-}
-
-
-function skipQuestion() {
-    nextQuestion();
-}
-
-function nextQuestion() {
-    currentQuestionIndex++;
-    if (currentQuestionIndex < quizQuestions.length) {
-        displayQuestion();
-    } else {
-        const quizDialog = document.getElementById('quiz');
-        quizDialog.innerHTML = "<p>End of Quiz. Filters are set according to your answers. <br>If you still haven't found what you need, at least you now clearly know what to look for. Visit <a href=https://joinup.ec.europa.eu/collection/eupl/solution/joinup-licensing-assistant/jla-find-and-compare-software-licenses>europa.eu</a> or <a href=https://opensource.org/license>opensource.org</a> for more comprehensive database. </p><button onclick='restartQuiz()'>Restart Quiz</button> ";
-    }
-}
-
-function showCommunityMessage() {
-    const quizDialog = document.getElementById('quiz');
-    quizDialog.innerHTML = `
-        <p>If you are contributing to community, it is easier to continue using that project's license. <a href='/community'>Read more</a> about community and finding what license it uses.</p>
-        <button onclick='restartQuiz()'>Restart Quiz</button>
-    `;
-}
-
-function restartQuiz() {
-    const selects = document.querySelectorAll('select');
-    selects.forEach(select => {
-        select.value = 'all'; // Assuming 'all' is the default state
-    });
-    updateFilters(); // Update the filters based on reset values
-    currentQuestionIndex = 0; // Reset the index to the first question
-    displayQuestion(); // Display the first question again
-}
-
-    function updateFilters() {
-        const licenses = document.querySelectorAll('.license');
-
-        licenses.forEach(license => {
-            let isDisplayed = true;
-
-            // Handle general filters
-            document.querySelectorAll('select').forEach(select => {
-                const value = select.value; // "include", "exclude", or "all"
-                const filterName = select.id.replace('-filter', ''); // e.g., "trademark", "liability"
-                const conditions = Array.from(license.querySelectorAll('.' + filterName)).map(li => li.textContent.trim().toLowerCase());
-
-                if (value === 'include' && !conditions.length) {
-                    isDisplayed = false;
-                } else if (value === 'exclude' && conditions.length) {
-                    isDisplayed = false;
-                }
-            });
-            license.style.display = isDisplayed ? 'block' : 'none';
         });
-    }
-    document.addEventListener('DOMContentLoaded', displayQuestion);
-    document.addEventListener('DOMContentLoaded', updateFilters);
-    document.addEventListener('DOMContentLoaded', () => {
-    displayQuestion(); // Start the quiz
-    updateFilters(); // Set initial state for filters
+        license.style.display = isDisplayed ? 'block' : 'none';
+    });
+}
+document.addEventListener('DOMContentLoaded', displayQuestion);
+document.addEventListener('DOMContentLoaded', updateFilters);
+document.addEventListener('DOMContentLoaded', () => {
+displayQuestion(); // Start the quiz
+updateFilters(); // Set initial state for filters
 });
 
-    </script>
+</script>
 </body>
 </html>
