@@ -1,0 +1,456 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>License Advisor</title>
+    <style>
+    #quiz {
+    background-color: #272727;
+    border: 2px solid #5c5c5c;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    }
+
+    #quiz p {
+        font-size: 24px; /* Larger text for questions */
+        color: #ffffff;
+        margin-top: 0;
+        margin-bottom: 20px;
+    }
+
+    #quiz button {
+        padding: 10px 20px;
+        font-size: 16px;
+        color: white;
+        background-color: #1699d2;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 5px;
+        transition: background-color 0.3s;
+    }
+
+    #quiz button:hover {
+        background-color: #0056b3;
+    }
+
+    #quiz button:focus {
+        background-color: green; /* Selected state color */
+    }
+
+    #quiz .detail {
+    font-size: 16px; 
+    color: #c7c7c7;
+    margin-top: 5px;
+    margin-bottom: 20px;
+    }
+
+    .filters {
+    display: flex;
+    }
+
+    .filter-column {
+        flex: 1; /* Each column takes up equal space */
+        padding: 10px; /* Add some padding around each column */
+    }
+
+    .active {
+  background-color: green; /* Selected state color */
+    }
+
+    .inactive {
+    background-color: red; /* Unselected state color */
+    }
+
+    /* Style the form */
+#regForm {
+  background-color: #ffffff;
+  margin: 100px auto;
+  padding: 40px;
+  width: 70%;
+  min-width: 300px;
+}
+
+/* Style the input fields */
+input {
+  padding: 10px;
+  width: 100%;
+  font-size: 17px;
+  font-family: Raleway;
+  border: 1px solid #aaaaaa;
+}
+
+/* Mark input boxes that gets an error on validation: */
+input.invalid {
+  background-color: #ffdddd;
+}
+
+/* Hide all steps by default: */
+.tab {
+  display: none;
+}
+
+/* Make circles that indicate the steps of the form: */
+.step {
+  height: 15px;
+  width: 15px;
+  margin: 0 2px;
+  background-color: #bbbbbb;
+  border: none;
+  border-radius: 50%;
+  display: inline-block;
+  opacity: 0.5;
+}
+
+/* Mark the active step: */
+.step.active {
+  opacity: 1;
+}
+
+/* Mark the steps that are finished and valid: */
+.step.finish {
+  background-color: #04AA6D;
+}
+
+    </style>
+</head>
+<body>
+    <h2>License Wizard</h2>
+    <p>If you don't know anything about licenses, then you can go through this wizard and it will fill in the filter values based on your answers</p>
+        <div id="quiz"></div>
+
+    <h2>Filters</h2>
+    <p>If you understand what all these filters mean, then use these filters and you can skip the wizard</p>
+
+    <div class="filters" id="quiz">
+        <div class="filter-column">
+            <!-- Conditions -->
+            <ul class="license-conditions">
+                <h3>Conditions</h3>
+                <li>
+                    <span class="license-sprite"></span>
+                    <label for="same-license-filter">Same license:</label>
+                    <select id="same-license-filter" onchange="updateFilters()">
+                        <option value="all">Any</option>
+                        <option value="include">Include same license</option>
+                        <option value="exclude">Exclude same license</option>
+                    </select>
+                </li>
+                <li>
+                    <span class="license-sprite"></span>
+                    <label for="network-use-disclose-filter">Network use:</label>
+                    <select id="network-use-disclose-filter" onchange="updateFilters()">
+                        <option value="all">Any</option>
+                        <option value="include">Include Network use</option>
+                        <option value="exclude">Exclude Network use</option>
+                    </select>
+                </li>
+                <li>
+                    <span class="license-sprite"></span>
+                    <label for="document-changes-filter">State Changes:</label>
+                    <select id="document-changes-filter" onchange="updateFilters()">
+                        <option value="all">Any</option>
+                        <option value="include">Include State Changes</option>
+                        <option value="exclude">Exclude State Changes</option>
+                    </select>
+                </li>
+                <li>
+                    <span class="license-sprite"></span>
+                    <label for="include-copyright-filter">Copyright notice:</label>
+                    <select id="include-copyright-filter" onchange="updateFilters()">
+                        <option value="all">Any</option>
+                        <option value="include">Include Copyright notice</option>
+                        <option value="exclude">Exclude Copyright notice</option>
+                    </select>
+                </li>
+            </ul>
+        </div>
+        <div class="filter-column">
+            <h3>Permission and Limitations</h3>
+            <!-- Permissions and Limitations -->
+            <ul class="license-permissions">
+                <li>
+                    <span class="license-sprite"></span>
+                    <label for="patent-use-filter">Patent Use:</label>
+                    <select id="patent-use-filter" onchange="updateFilters()">
+                        <option value="all">Any</option>
+                        <option value="include">Include Patent Use</option>
+                        <option value="exclude">Exclude Patent Use</option>
+                    </select>
+                </li>    
+            </ul>
+            <ul class="license-limitations">
+                <li>
+                    <span class="license-sprite"></span>
+                    <label for="liability-filter">Liability:</label>
+                    <select id="liability-filter" onchange="updateFilters()">
+                        <option value="all">Any</option>
+                        <option value="include">Include Liability</option>
+                        <option value="exclude">Exclude Liability</option>
+                    </select>
+                </li>
+                <li>
+                    <span class="license-sprite"></span>
+                    <label for="warranty-filter">Warranty:</label>
+                    <select id="warranty-filter" onchange="updateFilters()">
+                        <option value="all">Any</option>
+                        <option value="include">Include Warranty</option>
+                        <option value="exclude">Exclude Warranty</option>
+                    </select>
+                </li>
+                <li>
+                    <span class="license-sprite"></span>
+                    <label for="trademark-use-filter">Trademark:</label>
+                    <select id="trademark-use-filter" onchange="updateFilters()">
+                        <option value="all">Any</option>
+                        <option value="include">Include Trademark</option>
+                        <option value="exclude">Exclude Trademark</option>
+                    </select>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <h2>Below is a list of licenses that match your needs:</h2>
+
+    <div class="license">{% include license-overview.html license-id="0bsd" %}</div>
+    <div class="license">{% include license-overview.html license-id="afl-3.0" %}</div>
+    <div class="license">{% include license-overview.html license-id="apache-2.0" %}</div>
+    <div class="license">{% include license-overview.html license-id="artistic-2.0" %}</div>
+    <div class="license">{% include license-overview.html license-id="blueoak-1.0.0" %}</div>
+    <div class="license">{% include license-overview.html license-id="bsd-2-clause" %}</div>
+    <div class="license">{% include license-overview.html license-id="bsd-2-clause-patent" %}</div>
+    <div class="license">{% include license-overview.html license-id="bsd-3-clause" %}</div>
+    <div class="license">{% include license-overview.html license-id="bsd-3-clause-clear" %}</div>
+    <div class="license">{% include license-overview.html license-id="bsd-4-clause" %}</div>
+    <div class="license">{% include license-overview.html license-id="bsl-1.0" %}</div>
+    <div class="license">{% include license-overview.html license-id="cecill-2.1" %}</div>
+    <div class="license">{% include license-overview.html license-id="ecl-2.0" %}</div>
+    <div class="license">{% include license-overview.html license-id="epl-1.0" %}</div>
+    <div class="license">{% include license-overview.html license-id="epl-2.0" %}</div>
+    <div class="license">{% include license-overview.html license-id="eupl-1.2" %}</div>
+    <div class="license">{% include license-overview.html license-id="agpl-3.0" %}</div>
+    <div class="license">{% include license-overview.html license-id="gpl-2.0" %}</div>
+    <div class="license">{% include license-overview.html license-id="gpl-3.0" %}</div>
+    <div class="license">{% include license-overview.html license-id="lgpl-2.1" %}</div>
+    <div class="license">{% include license-overview.html license-id="lgpl-3.0" %}</div>
+    <div class="license">{% include license-overview.html license-id="isc" %}</div>
+    <div class="license">{% include license-overview.html license-id="lppl-1.3c" %}</div>
+    <div class="license">{% include license-overview.html license-id="mit" %}</div>
+    <div class="license">{% include license-overview.html license-id="mit-0" %}</div>
+    <div class="license">{% include license-overview.html license-id="mpl-2.0" %}</div>
+    <div class="license">{% include license-overview.html license-id="ms-pl" %}</div>
+    <div class="license">{% include license-overview.html license-id="ms-rl" %}</div>
+    <div class="license">{% include license-overview.html license-id="mulanpsl-2.0" %}</div>
+    <div class="license">{% include license-overview.html license-id="ncsa" %}</div>
+    <div class="license">{% include license-overview.html license-id="unlicense" %}</div>
+    <div class="license">{% include license-overview.html license-id="zlib" %}</div>
+    <div class="license">{% include license-overview.html license-id="postgresql" %}</div>
+    <div class="license">{% include license-overview.html license-id="osl-3.0" %}</div>
+    <div class="license">{% include license-overview.html license-id="wtfpl" %}</div>
+    <div class="license">{% include license-overview.html license-id="odbl-1.0" %}</div>
+    <div class="license">{% include license-overview.html license-id="upl-1.0" %}</div>
+    <div class="license">{% include license-overview.html license-id="vim" %}</div>
+<script>
+
+const quizQuestions = [
+
+    { 
+        question: "1/8 Do you use copyleft code base or libraries?",
+        detail: "If you're using code that's under a copyleft license, your project also has to be licensed under same license or similar terms to comply with those licenses conditions.",
+        filter: "same-license-filter", 
+
+    },
+    { 
+        question: "2/8 Do you prefer permissive or copyleft licenses?",
+        detail: "It will affect how restrictive the licensing is regarding how others can use, modify, and redistribute your code. <br>Copyleft license only allows users to use your code with copyleft license as well, which means all modifications will also remain free and open source and no commercial or closed source fork is allowed. <br>Permissive license has no restrictions, so anyone can take your code and use it in their project, be it commercial or open source",
+        filter: "same-license-filter", 
+
+    },
+    { 
+        question: "3/8 If you develop a web copyleft project, do you want to make giving online users access to source code mandatory?",
+        detail: "This clause prohibits users of your code from modifying it and then using it online as a closed source web project, as even remote users should have access to the source code, preserving the open nature of the software",
+        filter: "network-use-disclose-filter", 
+
+    },
+    { 
+        question: "4/8 Do you want to force users to document the changes they made in your code?",
+        detail: "If you want any change (by users who modify and redestribute your work) in your work to be documented (so that is clear where is your original code is and where the user changes are) you can choose a license with this requirement.",
+        filter: "document-changes-filter", 
+
+    },
+    { 
+        question: "5/8 Do you want to specify state of patent license for users?",
+        detail: "Clarifying the patent rights clause can clearly allow or prohibit users to use a patented tech from your project in their projects. Allowing it can protect your users from potential lawsuits from you or contributors of your project",
+        filter: "patent-use-filter", 
+  
+    },
+    { 
+        question: "6/8 Do you want to protect yourself by clearly having a limitation of liability?",
+        detail: "Basically, you will not be liable for any potential issues caused by your code. <br><br>Including a limitation of liability clause can protect you from lawsuits for damages caused by the use of your software. This clause is important when users rely on your software for critical functions, as it specifies that you are not liable for any resulting issues.",
+        filter: "liability-filter", 
+ 
+    },
+    { 
+        question: "7/8 Do you want to protect yourself by clearly not providing any warranty?",
+        detail: "Basically, you will not promise users of your code anything about its performance, quality, or suitability. <br><br>Stating that you do not provide any warranty with your software is crucial to manage user expectations and legal risks. This clause informs users that they are using the software at their own risk and that you do not guarantee its performance, quality, or suitability.",
+        filter: "warranty-filter", 
+     
+    },
+    { 
+        question: "8/8 Do you want to protect your IP by clearly prohibiting use of Trademark?",
+        detail: "Basically, people who modify and distribute your application are not allowed to use your app name, logo, slogan, etc. <br><br>Prohibiting the use of your trademark by others is important to protect your brand identity and intellectual property. This clause helps prevent confusion and misuse of your trademark, ensuring that only authorized use associated with your direct products is allowed.",
+        filter: "trademark-use-filter", 
+
+    },
+    ];
+
+let currentQuestionIndex = 0;
+
+function nextQuestion() {
+    currentQuestionIndex++; 
+    displayQuestion();
+}
+
+function backQuestion() {
+    currentQuestionIndex--; 
+    displayQuestion();
+}
+
+function displayQuestion() {
+    const quizDialog = document.getElementById('quiz');
+    const questionObj = quizQuestions[currentQuestionIndex];
+    let buttonsHTML = `
+        <button onclick="backQuestion()">↤ Back</button>
+        <button id="myButton" onclick="updateFilters('${questionObj.filter}', 'include')">${questionObj.valueYes}</button>
+        <button id="myButton" onclick="updateFilters('${questionObj.filter}', 'exclude')">${questionObj.valueNo}</button>
+    `;
+    if (currentQuestionIndex === 0) {
+        quizDialog.innerHTML = "<h1>Start the wizard?</h1>If you are contributing to community, it is easier to continue using that project's license. <a href='/community'>Read more</a> about community and finding what license it uses. <br><br>This advisor is designed to help beginner developers identify the most suitable open source license for their project. Answer the questions to narrow down your options based on your specific requirements. You can skip questions if you are not sure. To see a table of all licenses, visit <a href='/appendix'>appendix</a> Page. <br> Read more <a href=https://choosealicense.com/about>about the purpose</a> of this site. Also check out the <a href=https://github.com/TGRRRR/choosealicense.com>source code of this site</a>.<br><br>All open source licenses grant to the public <span class='license-permissions'><span class='license-sprite'></span></span> <b>permissions</b> to do things with licensed works which copyright or other IP laws might otherwise disallow.<br>Most open source licenses' grants of permissions are subject to compliance with <span class='license-conditions'><span class='license-sprite'></span></span> <b>conditions</b>.<br>Most open source licenses have <span class='license-limitations'><span class='license-sprite'></span></span> <b>limitations</b> that disclaim warranty and liability, or expressly exclude patents or trademarks from licenses' grants.<br><button onclick='nextQuestion()'>Start quiz</button>";
+    }
+    else if (currentQuestionIndex === 8) {
+        quizDialog.innerHTML = `<h2>${questionObj.question}</h2><p class="detail">${questionObj.detail}</p>` + buttonsHTML;
+    }
+    else {
+        quizDialog.innerHTML = `<h2>${questionObj.question}</h2><p class="detail">${questionObj.detail}</p>` + buttonsHTML + '<button onclick="nextQuestion()">Next ↦</button>';
+    }
+    updateButton(filterValue);
+}
+
+function updateButton(filterValue) {
+    const button = document.getElementById('myButton');
+
+    // Add class based on filter value
+    if (filterValue === 'include') {
+    button.classList.add('active');
+    } else {
+    button.classList.add('inactive');
+    }
+}
+
+function updateFilters(filterId, value) {
+    const filterElement = document.getElementById(filterId);
+    if (filterElement) {
+        filterElement.value = value;
+        updateFilters();
+    }
+    const licenses = document.querySelectorAll('.license');
+    licenses.forEach(license => {
+        let isDisplayed = true;
+
+        // Handle general filters
+        document.querySelectorAll('select').forEach(select => {
+            const value = select.value; // "include", "exclude", or "all"
+            const filterName = select.id.replace('-filter', ''); // e.g., "trademark", "liability"
+            const conditions = Array.from(license.querySelectorAll('.' + filterName)).map(li => li.textContent.trim().toLowerCase());
+
+            if (value === 'include' && !conditions.length) {
+                isDisplayed = false;
+            } else if (value === 'exclude' && conditions.length) {
+                isDisplayed = false;
+            }
+        });
+        license.style.display = isDisplayed ? 'block' : 'none';
+    });
+}
+document.addEventListener('DOMContentLoaded', displayQuestion);
+document.addEventListener('DOMContentLoaded', updateFilters);
+
+</script>
+
+<script>
+    var currentTab = 0; // Current tab is set to be the first tab (0)
+showTab(currentTab); // Display the current tab
+
+function showTab(n) {
+  // This function will display the specified tab of the form ...
+  var x = document.getElementsByClassName("tab");
+  x[n].style.display = "block";
+  // ... and fix the Previous/Next buttons:
+  if (n == 0) {
+    document.getElementById("prevBtn").style.display = "none";
+  } else {
+    document.getElementById("prevBtn").style.display = "inline";
+  }
+  if (n == (x.length - 1)) {
+    document.getElementById("nextBtn").innerHTML = "Submit";
+  } else {
+    document.getElementById("nextBtn").innerHTML = "Next";
+  }
+  // ... and run a function that displays the correct step indicator:
+  fixStepIndicator(n)
+}
+
+function nextPrev(n) {
+  // This function will figure out which tab to display
+  var x = document.getElementsByClassName("tab");
+  // Exit the function if any field in the current tab is invalid:
+  if (n == 1 && !validateForm()) return false;
+  // Hide the current tab:
+  x[currentTab].style.display = "none";
+  // Increase or decrease the current tab by 1:
+  currentTab = currentTab + n;
+  // if you have reached the end of the form... :
+  if (currentTab >= x.length) {
+    //...the form gets submitted:
+    document.getElementById("regForm").submit();
+    return false;
+  }
+  // Otherwise, display the correct tab:
+  showTab(currentTab);
+}
+
+function validateForm() {
+  // This function deals with validation of the form fields
+  var x, y, i, valid = true;
+  x = document.getElementsByClassName("tab");
+  y = x[currentTab].getElementsByTagName("input");
+  // A loop that checks every input field in the current tab:
+  for (i = 0; i < y.length; i++) {
+    // If a field is empty...
+    if (y[i].value == "") {
+      // add an "invalid" class to the field:
+      y[i].className += " invalid";
+      // and set the current valid status to false:
+      valid = false;
+    }
+  }
+  // If the valid status is true, mark the step as finished and valid:
+  if (valid) {
+    document.getElementsByClassName("step")[currentTab].className += " finish";
+  }
+  return valid; // return the valid status
+}
+
+function fixStepIndicator(n) {
+  // This function removes the "active" class of all steps...
+  var i, x = document.getElementsByClassName("step");
+  for (i = 0; i < x.length; i++) {
+    x[i].className = x[i].className.replace(" active", "");
+  }
+  //... and adds the "active" class to the current step:
+  x[n].className += " active";
+}
+</script>
+</body>
+</html>
