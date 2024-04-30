@@ -9,12 +9,6 @@ permalink: /advisor/
 <meta charset="UTF-8">
 <title>License Advisor</title>
 <style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f4f4;
-        margin: 0;
-        padding: 20px;
-    }
     #starterScreen, #wizard {
         background-color: rgb(56, 56, 56);
         border-radius: 5px;
@@ -238,27 +232,60 @@ permalink: /advisor/
 <div class="license">{% include license-overview.html license-id="vim" %}</div>
 
 
-    <script>
-        let currentScreen = "start";
-        const questions = [
-            { title: "1/8 Do you use copyleft code base or libraries?", detail: "If you're using code that's under a copyleft license, your project also has to be licensed under same license or similar terms to comply with those licenses conditions." },
-            { title: "2/8 Do you prefer permissive or copyleft licenses?", detail: "It will affect how restrictive the licensing is regarding how others can use, modify, and redistribute your code. Copyleft license only allows users to use your code with copyleft license as well, which means all modifications will also remain free and open source and no commercial or closed source fork is allowed. Permissive license has no restrictions, so anyone can take your code and use it in their project, be it commercial or open source." },
-            { title: "3/8 If you develop a web copyleft project, do you want to make giving online users access to source code mandatory?", detail: "Basically, you will not be liable for any potential issues caused by your code. Including a limitation of liability clause can protect you from lawsuits for damages caused by the use of your software. This clause is important when users rely on your software for critical functions, as it specifies that you are not liable for any resulting issues." },
-            { title: "4/8 Do you want to force users to document the changes they made in your code?", detail: "This clause prohibits users of your code from modifying it and then using it online as a closed source web project, as even remote users should have access to the source code, preserving the open nature of the software." },
-            { title: "5/8 Do you want to specify state of patent license for users?", detail: "If you want any change (by users who modify and redistribute your work) in your work to be documented (so that is clear where is your original code is and where the user changes are) you can choose a license with this requirement." },
-            { title: "6/8 Do you want to protect yourself by clearly having a limitation of liability?", detail: "Clarifying the patent rights clause can clearly allow or prohibit users to use a patented tech from your project in their projects. Allowing it can protect your users from potential lawsuits from you or contributors of your project." },
-            { title: "7/8 Do you want to protect yourself by clearly not providing any warranty?", detail: "Basically, you will not promise users of your code anything about its performance, quality, or suitability. Stating that you do not provide any warranty with your software is crucial to manage user expectations and legal risks. This clause informs users that they are using the software at their own risk and that you do not guarantee its performance, quality, or suitability." },
-            { title: "8/8 Do you want to protect your IP by clearly prohibiting use of Trademark?", detail: "Basically, people who modify and distribute your application are not allowed to use your app name, logo, slogan, etc. Prohibiting the use of your trademark by others is important to protect your brand identity and intellectual property. This clause helps prevent confusion and misuse of your trademark, ensuring that only authorized use associated with your direct products is allowed." },
-        ]
+<script>
+    let currentScreen = "start";
+    const questions = [
+        { 
+            title: "1/8 Do you prefer permissive or copyleft licenses?",
+            detail: "It will affect how restrictive the licensing is regarding how others can use, modify, and redistribute your code. Copyleft license only allows users to use your code with copyleft license as well, which means all modifications will also remain free and open source and no commercial or closed source fork is allowed. Permissive license has no restrictions, so anyone can take your code and use it in their project, be it commercial or open source. If you're using code that's under a copyleft license, your project also has to be licensed under same license or similar terms to comply with those licenses conditions.",
+            filter: "same-license-filter"
+        },
+        { 
+            title: "2/8 Do you want to specify state of patent license for users?",
+            detail: "Clarifying the patent rights clause can clearly allow or prohibit users to use a patented tech from your project in their projects. Allowing it can protect your users from potential lawsuits from you or contributors of your project.",
+            filter: "patent-use-filter"
+        },
+        { 
+            title: "3/8 If you develop a web copyleft project, do you want to make giving online users access to source code mandatory?",
+            detail: "This clause prohibits users of your code from modifying it and then using it online as a closed source web project, as even remote users should have access to the source code, preserving the open nature of the software.",
+            filter: "network-use-disclose-filter"
+        },
+        { 
+            title: "4/8 Do you want to force users to document the changes they made in your code?",
+            detail: "If you want any change (by users who modify and redistribute your work) in your work to be documented (so that is clear where is your original code is and where the user changes are) you can choose a license with this requirement.",
+            filter: "document-changes-filter"
+        },
+
+        {
+            title: "5/8 Do you require the inclusion of a copyright notice and license with the distributed code?",
+            detail: "A copy of the license and copyright notice must be included with the licensed material. This requirement ensures that all recipients of the software or code are informed of their rights under the license terms and the origin of the content.",
+            filter: "include-copyright-filter"
+        },
+        { 
+            title: "6/8 Do you want to protect yourself by clearly having a limitation of liability?",
+            detail: "Basically, you will not be liable for any potential issues caused by your code. Including a limitation of liability clause can protect you from lawsuits for damages caused by the use of your software. This clause is important when users rely on your software for critical functions, as it specifies that you are not liable for any resulting issues.",
+            filter: "liability-filter"
+        },
+        { 
+            title: "7/8 Do you want to protect yourself by clearly not providing any warranty?",
+            detail: "Basically, you will not promise users of your code anything about its performance, quality, or suitability. Stating that you do not provide any warranty with your software is crucial to manage user expectations and legal risks. This clause informs users that they are using the software at their own risk and that you do not guarantee its performance, quality, or suitability.",
+            filter: "warranty-filter"
+        },
+        { 
+            title: "8/8 Do you want to protect your IP by clearly prohibiting use of Trademark?",
+            detail: "Basically, people who modify and distribute your application are not allowed to use your app name, logo, slogan, etc. Prohibiting the use of your trademark by others is important to protect your brand identity and intellectual property. This clause helps prevent confusion and misuse of your trademark, ensuring that only authorized use associated with your direct products is allowed.",
+            filter: "trademark-use-filter"
+        }
+    ];
     let currentQuestion = 0;
     let answers = new Array(questions.length).fill(null);
-
+    
     function showScreen(screenId) {
         document.querySelectorAll('.active').forEach(el => el.classList.remove('active'));
         document.getElementById(screenId).classList.add('active');
         currentScreen = screenId === 'starterScreen' ? 'start' : 'quiz';
     }
-
+    
     function updateWizard() {
         document.getElementById("questionTitle").innerText = questions[currentQuestion].title;
         document.getElementById("questionDetail").innerText = questions[currentQuestion].detail;
@@ -268,7 +295,7 @@ permalink: /advisor/
         updateButtonStyles();
         linkAnswersToFilters();
     }
-
+    
     function createIndicators() {
         const container = document.getElementById("indicators");
         container.innerHTML = ''; // Clear previous indicators
@@ -279,7 +306,7 @@ permalink: /advisor/
             container.appendChild(indicator);
         });
     }
-
+    
     function updateButtonStyles() {
         const yesBtn = document.getElementById("yesBtn");
         const noBtn = document.getElementById("noBtn");
@@ -291,48 +318,37 @@ permalink: /advisor/
             noBtn.classList.add("active");
         }
     }
-
+    
     function linkAnswersToFilters() {
-        // Example linkage based on a question and filter response
-        const filterMapping = {
-            0: 'same-license-filter',  // Question 1 links to same-license filter
-            // Add more mappings as needed
-        };
-        let currentFilter = filterMapping[currentQuestion];
-        if (currentFilter) {
-            let filterValue = answers[currentQuestion] === 'Yes' ? 'include' : 'exclude';
-            document.getElementById(currentFilter).value = filterValue;
-            updateFilters(currentFilter, filterValue);
+        if (questions[currentQuestion].filter) {
+            let filterElement = document.getElementById(questions[currentQuestion].filter);
+            if (filterElement) {
+                filterElement.value = answers[currentQuestion] === 'Yes' ? 'include' : 'exclude';
+                // Optionally call a function to apply filter changes dynamically
+            }
         }
     }
-
+    
     document.getElementById("yesBtn").onclick = () => {
         answers[currentQuestion] = 'Yes';
         updateButtonStyles();
         linkAnswersToFilters();
+        updateFilters();
     };
-
+    
     document.getElementById("noBtn").onclick = () => {
         answers[currentQuestion] = 'No';
         updateButtonStyles();
         linkAnswersToFilters();
+        updateFilters();
     };
-
-    // Update filter based on answers
-    function updateFilters(filterId, value) {
-        const filterElement = document.getElementById(filterId);
-        if (filterElement) {
-            filterElement.value = value;
-        }
-        // Update logic for displaying licenses based on filters
-    }
-
+    
     document.getElementById("startBtn").onclick = () => {
         showScreen('wizard');
         createIndicators();
         updateWizard();
     };
-
+    
     document.getElementById("backBtn").onclick = () => {
         if (currentQuestion > 0) {
             currentQuestion--;
@@ -341,14 +357,13 @@ permalink: /advisor/
             showScreen('starterScreen');
         }
     };
-
+    
     document.getElementById("nextBtn").onclick = () => {
         if (currentQuestion < questions.length - 1) {
             currentQuestion++;
             updateWizard();
         }
     };
-
     function updateFilters(filterId, value) {
     const filterElement = document.getElementById(filterId);
     if (filterElement) {
@@ -377,7 +392,7 @@ permalink: /advisor/
 document.addEventListener('DOMContentLoaded', displayQuestion);
 document.addEventListener('DOMContentLoaded', updateFilters);
 
-showScreen('starterScreen'); // Initially show the starter screen
-</script>
-</body>
-</html>
+    showScreen('starterScreen'); // Initially show the starter screen
+    </script>
+    </body>
+    </html>
