@@ -12,15 +12,16 @@ permalink: /advisor/
     <style>
         #starterScreen,
         #wizard {
-            background-color: rgb(56, 56, 56);
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            background-color: #303030;
+            border-radius: 20px;
             padding: 20px;
             margin: auto;
-            width: 80%;
-            max-width: 600px;
+            min-height: 270px;
             text-align: center;
             display: none;
+            flex-direction: column;
+            justify-content: space-between; /* This will push the buttons to the bottom */
+            height: 100%; /* Make sure it fills the parent's height or set a fixed height */
         }
 
         #starterScreen.active,
@@ -51,6 +52,10 @@ permalink: /advisor/
             margin: 20px 0;
         }
 
+        .buttons {
+            padding-bottom: 5px;
+
+        }
         #buttons button {
             padding: 10px 20px;
             border: none;
@@ -68,28 +73,25 @@ permalink: /advisor/
         }
 
         #buttons button.active {
-            background-color: #28a745 !important; /* Green */
-            box-shadow: 0 2px 5px rgba(0, 255, 0, 0.5); /* Make it very obvious when active */
+            background-color: #3cc636 !important; /* Green */
         }
-
 
         #buttons #backBtn,
         #buttons #nextBtn {
-            background-color: #007bff;
+            background-color: #0098d7;
             /* Blue */
         }
 
-        #buttons #yesBtn,
-        #buttons #noBtn {
-            background-color: #ff0000;
+        #buttons #yesBtn, #buttons #noBtn {
+            background-color: #c7403c;
             /* Red */
         }
 
         .filters {
             display: flex;
-            background: #3f3f3f;
+            background: #303030;
             padding: 10px;
-            border-radius: 5px;
+            border-radius: 20px;
             margin-top: 20px;
         }
 
@@ -115,9 +117,9 @@ permalink: /advisor/
         </div>
         <div id="buttons">
             <button id="backBtn">Back</button>
-            <button id="nextBtn">Next</button>
             <button id="yesBtn">Yes</button>
             <button id="noBtn">No</button>
+            <button id="nextBtn">Next</button>
         </div>
     </div>
 
