@@ -38,7 +38,7 @@ permalink: /advisor/
             width: 20px;
             height: 20px;
             border-radius: 50%;
-            background-color: #3d3d3d;
+            background-color: #1b1b1b;
             cursor: pointer;
             margin: 0 5px;
         }
@@ -68,9 +68,10 @@ permalink: /advisor/
         }
 
         #buttons button.active {
-            background-color: #28a745;
-            /* Green */
+            background-color: #28a745 !important; /* Green */
+            box-shadow: 0 2px 5px rgba(0, 255, 0, 0.5); /* Make it very obvious when active */
         }
+
 
         #buttons #backBtn,
         #buttons #nextBtn {
@@ -80,7 +81,7 @@ permalink: /advisor/
 
         #buttons #yesBtn,
         #buttons #noBtn {
-            background-color: #dc3545;
+            background-color: #ff0000;
             /* Red */
         }
 
@@ -328,39 +329,48 @@ permalink: /advisor/
         }
 
         function updateButtonStyles() {
+            console.log("Updating button styles for question:", currentQuestion, "Answer:", answers[currentQuestion]);
             const yesBtn = document.getElementById("yesBtn");
             const noBtn = document.getElementById("noBtn");
-            yesBtn.classList.remove("active", "focused");
-            noBtn.classList.remove("active", "focused");
-            if (answers[currentQuestion]) {
-                if (answers[currentQuestion] === 'Yes') {
-                    yesBtn.classList.add("active");
-                } else if (answers[currentQuestion] === 'No') {
-                    noBtn.classList.add("active");
-                }
+            yesBtn.classList.remove("active");
+            noBtn.classList.remove("active");
+            if (answers[currentQuestion] === 'Yes') {
+                yesBtn.classList.add("active");
+            } else if (answers[currentQuestion] === 'No') {
+                noBtn.classList.add("active");
             }
-        }
+}
 
         function linkAnswersToFilters() {
-            if (questions[currentQuestion].filter) {
-                let filterElement = document.getElementById(questions[currentQuestion].filter);
-                if (filterElement && answers[currentQuestion]) {
-                    filterElement.value = answers[currentQuestion] === 'Yes' ? 'include' : 'exclude';
-                    updateFilters();
-                }
+            let filterElement = document.getElementById(questions[currentQuestion].filter);
+            if (filterElement && answers[currentQuestion]) {
+                filterElement.value = answers[currentQuestion] === 'Yes' ? 'include' : 'exclude';
+                updateFilters(); // Call updateFilters whenever the filter changes
             }
-        }
+}
+
+        document.querySelectorAll('select').forEach(select => {
+            select.addEventListener('change', (event) => {
+                // Synchronize answers with select changes manually.
+                const question = questions.find(q => q.filter === event.target.id);
+                if (question) {
+                    const questionIndex = questions.indexOf(question);
+                    answers[questionIndex] = event.target.value === 'include' ? 'Yes' : 'No';
+                    updateButtonStyles(); // Update button styles based on the new answers.
+                }
+            });
+        });
 
         document.getElementById("yesBtn").onclick = () => {
             answers[currentQuestion] = 'Yes';
-            updateButtonStyles();
-            linkAnswersToFilters();
+            linkAnswersToFilters(); // Make sure to first update the answer linkage
+            updateButtonStyles(); // Update button styles after setting answers
         };
 
         document.getElementById("noBtn").onclick = () => {
             answers[currentQuestion] = 'No';
-            updateButtonStyles();
-            linkAnswersToFilters();
+            linkAnswersToFilters(); // Make sure to first update the answer linkage
+            updateButtonStyles(); // Update button styles after setting answers
         };
 
         document.getElementById("startBtn").onclick = () => {
@@ -400,7 +410,6 @@ permalink: /advisor/
                     const value = select.value; // "include", "exclude", or "all"
                     const filterName = select.id.replace('-filter', ''); // e.g., "trademark", "liability"
                     const conditions = Array.from(license.querySelectorAll('.' + filterName)).map(li => li.textContent.trim().toLowerCase());
-
                     if (value === 'include' && !conditions.length) {
                         isDisplayed = false;
                     } else if (value === 'exclude' && conditions.length) {
@@ -410,12 +419,9 @@ permalink: /advisor/
                 license.style.display = isDisplayed ? 'block' : 'none';
             });
         }
-        document.addEventListener('DOMContentLoaded', displayQuestion);
         document.addEventListener('DOMContentLoaded', updateFilters);
-
         showScreen('starterScreen'); // Initially show the starter screen
         
     </script>
 </body>
-
 </html>
