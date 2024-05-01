@@ -343,11 +343,17 @@ permalink: /advisor/
 
         function linkAnswersToFilters() {
             let filterElement = document.getElementById(questions[currentQuestion].filter);
-            if (filterElement && answers[currentQuestion]) {
-                filterElement.value = answers[currentQuestion] === 'Yes' ? 'include' : 'exclude';
-                updateFilters(); // Call updateFilters whenever the filter changes
+            if (filterElement) {
+                if (answers[currentQuestion] === 'Yes') {
+                    filterElement.value = 'include';
+                } else if (answers[currentQuestion] === 'No') {
+                    filterElement.value = 'exclude';
+                } else {
+                    filterElement.value = 'all';  // Set to 'Any' if answer is reset
+                }
+                updateFilters();  // Apply changes to the visible licenses
             }
-}
+        }
 
         document.querySelectorAll('select').forEach(select => {
             select.addEventListener('change', (event) => {
@@ -362,17 +368,24 @@ permalink: /advisor/
         });
 
         document.getElementById("yesBtn").onclick = () => {
-            answers[currentQuestion] = 'Yes';
-            linkAnswersToFilters(); // Make sure to first update the answer linkage
-            updateButtonStyles(); // Update button styles after setting answers
+            if (answers[currentQuestion] === 'Yes') {
+                answers[currentQuestion] = null;  // Reset the answer if it's already 'Yes'
+            } else {
+                answers[currentQuestion] = 'Yes';
+            }
+            linkAnswersToFilters();  // Update filter linkage based on new answer
+            updateButtonStyles();  // Update visual styles after changing the answer
         };
 
         document.getElementById("noBtn").onclick = () => {
-            answers[currentQuestion] = 'No';
-            linkAnswersToFilters(); // Make sure to first update the answer linkage
-            updateButtonStyles(); // Update button styles after setting answers
+            if (answers[currentQuestion] === 'No') {
+                answers[currentQuestion] = null;  // Reset the answer if it's already 'No'
+            } else {
+                answers[currentQuestion] = 'No';
+            }
+            linkAnswersToFilters();  // Update filter linkage based on new answer
+            updateButtonStyles();  // Update visual styles after changing the answer
         };
-
         document.getElementById("startBtn").onclick = () => {
             showScreen('wizard');
             createIndicators();
