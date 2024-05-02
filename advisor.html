@@ -18,9 +18,17 @@ permalink: /advisor/
             min-height: 320px;
             display: none;
             flex-direction: column;
-            justify-content: space-between; /* This will push the buttons to the bottom */
             height: 100%; /* Make sure it fills the parent's height or set a fixed height */
             text-align: left;
+            justify-content: flex-start; /* Aligns children at the start of the flex container */
+            align-items: stretch; /* Stretches the children to fit the width of the container */
+        }
+
+        .content-container {
+            flex-grow: 1; /* Takes up all available space */
+            display: flex;
+            flex-direction: column;
+            overflow: auto; /* Adds scrolling to this container if content overflows */
         }
 
         .button-container {
@@ -36,7 +44,7 @@ permalink: /advisor/
         #indicators {
             display: flex;
             justify-content: center;
-            padding: 20px;
+            padding: 10px;
         }
 
         #indicators .indicator {
@@ -143,6 +151,7 @@ permalink: /advisor/
             color: #999;
             cursor: help;
         }
+
     </style>
 </head>
 
@@ -150,7 +159,7 @@ permalink: /advisor/
     <p>This wizard is designed to help beginner developers identify the most suitable open source license for their project.</p>
     <div id="starterScreen" class="active">
         <h2>License selecting Wizard</h2>
-        <p><b>If you are working in a community or on a project, please don't choose any license.</b> Just use that project's license.<br>To find out what is a community and where to find their license, <a href='/community'>Read more about community</a> <br><br> Follow the wizard to narrow down your options based on your requirements or wishes. You can skip questions if you are not sure. To see a table of all licenses, visit <a href='/appendix'>appendix</a> page. Read more <a href=https://choosealicense.com/about>about the purpose</a> of this site.<br><br>All open source licenses grant to the public <span class='license-permissions'><span class='license-sprite'></span></span> <b>permissions</b> to do things with licensed works which copyright or other IP laws might disallow.<br>Most open source licenses' grants of permissions are subject to compliance with <span class='license-conditions'><span class='license-sprite'></span></span> <b>conditions</b>.<br>Most open source licenses have <span class='license-limitations'><span class='license-sprite'></span></span> <b>limitations</b> that disclaim warranty and liability, or exclude patents or trademarks from licenses' grants.</p>
+        <p><b>If you are working in a community or on a project, please don't choose any license.</b> Just use that project's license.<br>To find out what is a community and where to find their license, <a href='/community'>Read more about community</a> <br><br> Follow the wizard to narrow down your options based on your requirements or wishes. You can skip questions if you are not sure. To see a table of all licenses, visit <a href='/appendix'>appendix</a> page. Read more <a href=https://choosealicense.com/about>about the purpose</a> of this site.<br><br>All open source licenses grant to the public <span class='license-permissions'><span class='license-sprite'></span></span> <b>permissions</b> to do things with licensed works which copyright or other IP laws might disallow.<br>Most open source licenses' grants of permissions are subject to compliance with <span class='license-conditions'><span class='license-sprite'></span></span> <b>conditions</b>.<br>Most open source licenses have <span class='license-limitations'><span class='license-sprite'></span></span> <b>limitations</b> that disclaim warranty and liability, or exclude patents or trademarks from licenses' grants. <br><br></p>
         <div class="button-container">
             <button class="toggleFiltersBtn"><b>Toggle Filters</b></button>
             <button id="startBtn"><b>Start</b></button>
@@ -158,10 +167,14 @@ permalink: /advisor/
 
     </div>
     <div id="wizard">
-        <div id="indicators"></div>
-        <div id="questionBox">
-            <h2 id="questionTitle"></h2>
-            <p id="questionDetail"></p>
+        <div class="content-container">
+            <div id="indicators"></div>
+            <div id="questionBox">
+                <h2 id="questionTitle"></h2>
+            </div>
+            <div>
+                <p id="questionDetail"></p>
+            </div>
         </div>
         <div id="buttons">
             <button class="toggleFiltersBtn"><b>Toggle Filters</b></button>
@@ -174,7 +187,7 @@ permalink: /advisor/
     <br>
     <div id="filtersDiv" class="filtersDiv">
         <h1>Filters</h1>
-        <p>If you understand what all these filters mean, then use these filters and skip the wizard.</p>
+        <p>If you understand what all these clauses mean, then use these filters and skip the wizard.</p>
         <div class="filters" id="quiz">
             <div class="filter-column">
                 <h3>Conditions</h3>
@@ -300,8 +313,8 @@ permalink: /advisor/
         let currentScreen = "start";
         const questions = [
             {
-                title: " 1/8 Do you prefer permissive or copyleft licenses?",
-                detail: "It will affect how restrictive the licensing is regarding how others can redistribute your code. Copyleft license only allows users to use your code with copyleft license as well, which means all modifications will also remain free and open source and no commercial or closed source fork is allowed. Permissive license has no restrictions, so anyone can take your code and use it in their project, be it commercial or open source. <br>  <b>If you're using code that's under a copyleft license, your project also has to be licensed under same license or similar terms to comply with those licenses conditions.</b>",
+                title: " 1/8 Do you prefer copyleft licenses over permissive licenses?",
+                detail: "It will affect how restrictive the licensing is regarding how others can redistribute your code. Copyleft license only allows users to use your code with copyleft license as well, which means all modifications will also remain free and open source and no commercial or closed source fork is allowed. Permissive license has no restrictions, so anyone can take your code and use it in their project, commercial or open source. <br><br>  If you are using code that is under a copyleft license, your project also has to be licensed under the same or similar license to comply with licenses conditions. <b>If use use copyleft code or libraries, you are required to press YES</b>",
                 filter: "same-license-filter"
             },
             {
@@ -351,8 +364,8 @@ permalink: /advisor/
         }
 
         function updateWizard() {
-            document.getElementById("questionTitle").innerText = questions[currentQuestion].title;
-            document.getElementById("questionDetail").innerText = questions[currentQuestion].detail;
+            document.getElementById("questionTitle").innerHTML = questions[currentQuestion].title;
+            document.getElementById("questionDetail").innerHTML = questions[currentQuestion].detail;
             document.querySelectorAll('#indicators .indicator').forEach((ind, index) => {
                 ind.classList.toggle('active', index === currentQuestion);
             });
