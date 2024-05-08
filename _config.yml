@@ -8,7 +8,7 @@ url: "https://choosealicense.com"
 collections:
   licenses:
     output: true
-    permalink: /choosealicense.com/licenses/:path/
+    permalink: /licenses/:path/
 
 defaults:
   -
