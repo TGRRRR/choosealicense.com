@@ -3,12 +3,12 @@ title: Choose a License
 description: Non-judgmental guidance on choosing a license for your open source project
 relative_permalinks: false
 markdown: kramdown
-url: "https://tgrrrr.github.io/choosealicense.com"
+url: "https://choosealicense.com"
 
 collections:
   licenses:
     output: true
-    permalink: /licenses/:path/
+    permalink: /choosealicense.com/licenses/:path/
 
 defaults:
   -
